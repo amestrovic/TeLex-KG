@@ -4,12 +4,12 @@ This resource accompanies the paper *A Temporal Knowledge Graph Schema to Suppor
 
 ## Files
 
-|File|Content|
-|-|-|
-|`README.md`|this description, the queries with their expected answers and the language model responses|
-|`telex.ttl`|the schema: node types, relations and attributes, aligned with ELI|
-|`telex-shapes.ttl`|SHACL shapes for C1, C2 and C3 and for the consistency of events, bounds, hierarchy, texts and conditions|
-|`case-study.ttl`|Part 1: the two examples of Section 5, built by hand from the official texts; Part 2: clearly marked synthetic examples|
+| File | Content |
+|---|---|
+| `README.md` | this description, the queries with their expected answers and the language model responses |
+| `telex.ttl` | the schema: node types, relations and attributes, aligned with ELI |
+| `telex-shapes.ttl` | SHACL shapes for C1, C2 and C3 and for the consistency of events, bounds, hierarchy, texts and conditions |
+| `case-study.ttl` | Part 1: the two examples of Section 5, built by hand from the official texts; Part 2: clearly marked synthetic examples |
 
 The graph was built by hand from the official texts in the Croatian Official Gazette (Narodne novine). Every act is identified by its ELI, for example `https://narodne-novine.nn.hr/eli/sluzbeni/2022/119/1834`, so every statement can be checked against its source. Components, versions, texts, events and conditions are identified in the namespace `https://w3id.org/telex-kg/id/`, from the ELI path of the act, the component, the entry-into-force date of the version and the language. Classes and properties defined by TeLex-KG use the prefix `tlx:` (`https://w3id.org/telex-kg/ontology#`). These IRIs are identifiers; redirects are not configured, so they do not resolve to documents.
 
@@ -22,16 +22,16 @@ pip install pyshacl
 pyshacl -s telex-shapes.ttl -e telex.ttl case-study.ttl
 ```
 
-The expected output is `Conforms: True`. The shapes are run without RDFS inference on purpose: domain and range inference would type an undescribed resource (for example the target of HAS\_CONDITION) and hide a missing description. The shapes check the following.
+The expected output is `Conforms: True`. The shapes are run without RDFS inference on purpose: domain and range inference would type an undescribed resource (for example the target of HAS_CONDITION) and hide a missing description. The shapes check the following.
 
-|Shapes|What they check|
-|-|-|
-|C1|versions of the same component do not overlap in force|
-|C2|versions whose application intervals overlap each state an application rule|
-|C3|for each interval, a version has either one last day or one reading of the absent end; pending\_condition requires a described termination condition that affects that interval and has no recorded fulfilment; an unresolved condition on an interval without an end requires pending\_condition|
-|events|opening and closing events agree with the interval bounds, each relation for its own interval; every stored bound is justified by such an event|
-|structure|exactly one start of legal force and one start of applicability, of type `xsd:date`; no end before its start; one parent per component, an act or a component, without cycles; HAS\_CONDITION points to a TerminationCondition; `tlx:text` is a language-tagged string whose tag matches `eli:language`; `tlx:textSource` is an IRI; one text unit per language and version|
-|conditions|complete description (text, act, provision, affected interval, effective date); effective date not before the entry into force of the prescribing provision; status agrees with FULFILLED\_BY and with the requirements; FULFILLED\_BY is the event that met the last requirement and closes the affected intervals|
+| Shapes | What they check |
+|---|---|
+| C1 | versions of the same component do not overlap in force |
+| C2 | versions whose application intervals overlap each state an application rule |
+| C3 | for each interval, a version has either one last day or one reading of the absent end; pending_condition requires a described termination condition that affects that interval and has no recorded fulfilment; an unresolved condition on an interval without an end requires pending_condition |
+| events | opening and closing events agree with the interval bounds, each relation for its own interval; every stored bound is justified by such an event |
+| structure | exactly one start of legal force and one start of applicability, of type `xsd:date`; no end before its start; one parent per component, an act or a component, without cycles; HAS_CONDITION points to a TerminationCondition; `tlx:text` is a language-tagged string whose tag matches `eli:language`; `tlx:textSource` is an IRI; one text unit per language and version |
+| conditions | complete description (text, act, provision, affected interval, effective date); effective date not before the entry into force of the prescribing provision; status agrees with FULFILLED_BY and with the requirements; FULFILLED_BY is the event that met the last requirement and closes the affected intervals |
 
 Two quick tests show the shapes at work.
 
@@ -39,20 +39,20 @@ Two quick tests show the shapes at work.
 2. **C1 and C2.** Add the following lines to the end of `case-study.ttl`. The validator reports two C1 and two C2 violations, one of each for each version.
 
 ```
-<sluzbeni/2022/119/1834/art\_107/v/2022-12-01> a tlx:TemporalVersion ;
-    eli:is\_member\_of <sluzbeni/2022/119/1834/art\_107> ;
-    eli:first\_date\_entry\_in\_force "2022-12-01"^^xsd:date ;
+<sluzbeni/2022/119/1834/art_107/v/2022-12-01> a tlx:TemporalVersion ;
+    eli:is_member_of <sluzbeni/2022/119/1834/art_107> ;
+    eli:first_date_entry_in_force "2022-12-01"^^xsd:date ;
     tlx:openEnd tlx:NonePrescribed ;
-    eli:date\_applicability "2022-12-01"^^xsd:date ;
+    eli:date_applicability "2022-12-01"^^xsd:date ;
     tlx:openApplicabilityEnd tlx:NonePrescribed ;
-    eli:is\_realized\_by <sluzbeni/2022/119/1834/art\_107/v/2022-10-22/hrv> .
+    eli:is_realized_by <sluzbeni/2022/119/1834/art_107/v/2022-10-22/hrv> .
 
 <event/test/2022-12-01> a tlx:ChangeEvent ;
     tlx:eventType tlx:Amendment ;
     tlx:date "2022-12-01"^^xsd:date ;
     tlx:causedBy <https://narodne-novine.nn.hr/eli/sluzbeni/2022/119/1834> ;
-    tlx:opens <sluzbeni/2022/119/1834/art\_107/v/2022-12-01> ;
-    tlx:opensApplicability <sluzbeni/2022/119/1834/art\_107/v/2022-12-01> .
+    tlx:opens <sluzbeni/2022/119/1834/art_107/v/2022-12-01> ;
+    tlx:opensApplicability <sluzbeni/2022/119/1834/art_107/v/2022-12-01> .
 ```
 
 ## How to run the queries
@@ -61,44 +61,44 @@ Any SPARQL 1.1 engine can be used. With rdflib, save the prefixes and one of the
 
 ```
 pip install rdflib
-python -c "from rdflib import Graph; g = Graph(); g.parse('case-study.ttl'); \[print(r) for r in g.query(open('query.rq').read())]"
+python -c "from rdflib import Graph; g = Graph(); g.parse('case-study.ttl'); [print(r) for r in g.query(open('query.rq').read())]"
 ```
 
 ## Conventions
 
-* Both intervals store their upper bound as the last included day: `eli:date\_no\_longer\_in\_force` for legal force and `tlx:dateNoLongerApplicable` for applicability. The paper uses half-open intervals, whose exclusive end is the day after the stored date; an event that closes an interval falls on that day. Queries therefore compare stored upper bounds inclusively (`?t <= ?last`). Article 107 is in force up to and including 31 December 2022, and the event that ends it takes effect on 1 January 2023.
-* `tlx:opens` and `tlx:closes` act on legal force; `tlx:opensApplicability` and `tlx:closesApplicability` act on applicability. The end of legal force does not end applicability by itself.
-* A start of applicability equal to the start of legal force means that the act sets no separate date of application. An end of applicability is never copied from the end of legal force: each version records its own end of applicability or the reading of its absence.
-* The readings `tlx:NonePrescribed`, `tlx:PendingCondition` and `tlx:NotExtracted` are recorded separately for each interval and refer to the sources included in the graph.
-* A termination condition states which interval it ends (`tlx:affects`) and from which day it has legal effect (`tlx:effectiveFrom`, from the source). Before that day it does not qualify the status of the version, and query 4 then gives no reading instead of assuming that no end was prescribed.
-* A condition may consist of several requirements, all of which must be met. Fulfilment is not detected automatically: it is entered explicitly (`tlx:fulfilledBy`, `tlx:metBy`) after the sources have been checked. The status `tlx:NoRecordedFulfilment` means only that no fulfilment is recorded. `tlx:checkedOn` is given only when a check was actually made.
-* An application rule is text. The graph does not decide whether it covers a particular case.
-* Text units with `tlx:text` contain the complete text of the provision, with a language tag and `dcterms:source`; the others point to the official source with `tlx:textSource`, and query 1 returns that link.
+- Both intervals store their upper bound as the last included day: `eli:date_no_longer_in_force` for legal force and `tlx:dateNoLongerApplicable` for applicability. The paper uses half-open intervals, whose exclusive end is the day after the stored date; an event that closes an interval falls on that day. Queries therefore compare stored upper bounds inclusively (`?t <= ?last`). Article 107 is in force up to and including 31 December 2022, and the event that ends it takes effect on 1 January 2023.
+- `tlx:opens` and `tlx:closes` act on legal force; `tlx:opensApplicability` and `tlx:closesApplicability` act on applicability. The end of legal force does not end applicability by itself.
+- A start of applicability equal to the start of legal force means that the act sets no separate date of application. An end of applicability is never copied from the end of legal force: each version records its own end of applicability or the reading of its absence.
+- The readings `tlx:NonePrescribed`, `tlx:PendingCondition` and `tlx:NotExtracted` are recorded separately for each interval and refer to the sources included in the graph.
+- A termination condition states which interval it ends (`tlx:affects`) and from which day it has legal effect (`tlx:effectiveFrom`, from the source). Before that day it does not qualify the status of the version, and query 4 then gives no reading instead of assuming that no end was prescribed.
+- A condition may consist of several requirements, all of which must be met. Fulfilment is not detected automatically: it is entered explicitly (`tlx:fulfilledBy`, `tlx:metBy`) after the sources have been checked. The status `tlx:NoRecordedFulfilment` means only that no fulfilment is recorded. `tlx:checkedOn` is given only when a check was actually made.
+- An application rule is text. The graph does not decide whether it covers a particular case.
+- Text units with `tlx:text` contain the complete text of the provision, with a language tag and `dcterms:source`; the others point to the official source with `tlx:textSource`, and query 1 returns that link.
 
 ## Correspondence with ELI
 
-|Paper|RDF|
-|-|-|
-|LegalWork, Component, TemporalVersion, TextUnit|subclasses of `eli:LegalResource`, `eli:LegalResourceSubdivision`, `eli:LegalResource`, `eli:LegalExpression`|
-|title of a LegalWork|`dcterms:title`, because the domain of `eli:title` is `eli:Expression`|
-|HAS\_COMPONENT, HAS\_TEMPORAL\_VERSION, HAS\_TEXT\_UNIT|`eli:is\_part\_of` and `eli:is\_member\_of` (inverses of `eli:has\_part` and `eli:has\_member`), `eli:is\_realized\_by`|
-|SUPERSEDED\_BY, BASED\_ON|`eli:repealed\_by`, `eli:based\_on`|
-|in\_force\_from, in\_force\_to, applies\_from|`eli:first\_date\_entry\_in\_force`, `eli:date\_no\_longer\_in\_force` (last day), `eli:date\_applicability`|
-|applies\_to, application\_rule|`tlx:dateNoLongerApplicable` (last day), `tlx:applicationRule`|
-|open\_end|`tlx:openEnd` for legal force and `tlx:openApplicabilityEnd` for applicability|
-|OPENS, CLOSES|`tlx:opens`, `tlx:closes` for legal force; `tlx:opensApplicability`, `tlx:closesApplicability` for applicability|
-|CAUSED\_BY, HAS\_CONDITION, PRESCRIBED\_BY, FULFILLED\_BY|`tlx:causedBy`, `tlx:hasCondition`, `tlx:prescribedBy`, `tlx:fulfilledBy`|
-|attributes of a TerminationCondition|`tlx:condition`, `tlx:prescribingProvision`, `tlx:affects`, `tlx:effectiveFrom`, `tlx:status` (`tlx:Fulfilled` or `tlx:NoRecordedFulfilment`, derived from FULFILLED\_BY), `tlx:checkedOn`; its requirements are `tlx:Requirement` nodes|
+| Paper | RDF |
+|---|---|
+| LegalWork, Component, TemporalVersion, TextUnit | subclasses of `eli:LegalResource`, `eli:LegalResourceSubdivision`, `eli:LegalResource`, `eli:LegalExpression` |
+| title of a LegalWork | `dcterms:title`, because the domain of `eli:title` is `eli:Expression` |
+| HAS_COMPONENT, HAS_TEMPORAL_VERSION, HAS_TEXT_UNIT | `eli:is_part_of` and `eli:is_member_of` (inverses of `eli:has_part` and `eli:has_member`), `eli:is_realized_by` |
+| SUPERSEDED_BY, BASED_ON | `eli:repealed_by`, `eli:based_on` |
+| in_force_from, in_force_to, applies_from | `eli:first_date_entry_in_force`, `eli:date_no_longer_in_force` (last day), `eli:date_applicability` |
+| applies_to, application_rule | `tlx:dateNoLongerApplicable` (last day), `tlx:applicationRule` |
+| open_end | `tlx:openEnd` for legal force and `tlx:openApplicabilityEnd` for applicability |
+| OPENS, CLOSES | `tlx:opens`, `tlx:closes` for legal force; `tlx:opensApplicability`, `tlx:closesApplicability` for applicability |
+| CAUSED_BY, HAS_CONDITION, PRESCRIBED_BY, FULFILLED_BY | `tlx:causedBy`, `tlx:hasCondition`, `tlx:prescribedBy`, `tlx:fulfilledBy` |
+| attributes of a TerminationCondition | `tlx:condition`, `tlx:prescribingProvision`, `tlx:affects`, `tlx:effectiveFrom`, `tlx:status` (`tlx:Fulfilled` or `tlx:NoRecordedFulfilment`, derived from FULFILLED_BY), `tlx:checkedOn`; its requirements are `tlx:Requirement` nodes |
 
 ## Case study
 
-|Act|ELI|In force from|In the graph|
-|-|-|-|-|
-|Act on Higher Education and Scientific Activity (OG 119/2022)|`.../eli/sluzbeni/2022/119/1834`|22 Oct 2022|Arts. 107, 108, 121(3), 122|
-|Act on Scientific Activity and Higher Education (OG 123/2003)|`.../eli/sluzbeni/2003/123/1742`||repealed on 22 Oct 2022|
-|Act on Quality Assurance in Higher Education and Science (OG 151/2022)|`.../eli/sluzbeni/2022/151/2330`|30 Dec 2022|Arts. 8(3), 21(3), 50, 51, 52|
-|Act on Quality Assurance in Science and Higher Education (OG 45/2009)|`.../eli/sluzbeni/2009/45/1031`||repealed on 30 Dec 2022|
-|Regulation on licences for scientific activity (OG 83/2010)|`.../eli/sluzbeni/2010/83/2375`|13 Jul 2010|kept in force by Art. 50 of OG 151/2022|
+| Act | ELI | In force from | In the graph |
+|---|---|---|---|
+| Act on Higher Education and Scientific Activity (OG 119/2022) | `.../eli/sluzbeni/2022/119/1834` | 22 Oct 2022 | Arts. 107, 108, 121(3), 122 |
+| Act on Scientific Activity and Higher Education (OG 123/2003) | `.../eli/sluzbeni/2003/123/1742` | | repealed on 22 Oct 2022 |
+| Act on Quality Assurance in Higher Education and Science (OG 151/2022) | `.../eli/sluzbeni/2022/151/2330` | 30 Dec 2022 | Arts. 8(3), 21(3), 50, 51, 52 |
+| Act on Quality Assurance in Science and Higher Education (OG 45/2009) | `.../eli/sluzbeni/2009/45/1031` | | repealed on 30 Dec 2022 |
+| Regulation on licences for scientific activity (OG 83/2010) | `.../eli/sluzbeni/2010/83/2375` | 13 Jul 2010 | kept in force by Art. 50 of OG 151/2022 |
 
 The introduction of the euro on 1 January 2023 is one event that ends the legal force of Article 107 and opens Article 108. Article 121(3) states when Article 107 ceases to be in force, but not until when it is applied to cases that arose while it was in force, so its end of applicability is recorded as not extracted. The regulation OG 83/2010 remains in force until the quality standards under Article 8(3) and the decision on the form and content of the licence under Article 21(3) of OG 151/2022 are adopted. The condition affects legal force and has effect from 30 December 2022. The graph records it with its two requirements, but no event that meets either of them and no check for such events. The included sources do not state whether the regulation is applied after it ceases to be in force, so its end of applicability is recorded as not extracted.
 
@@ -106,8 +106,8 @@ The introduction of the euro on 1 January 2023 is one event that ends the legal 
 
 Part 2 of `case-study.ttl` contains invented acts under `https://w3id.org/telex-kg/id/synthetic/`, marked as synthetic in their descriptions.
 
-* **A. Force and applicability diverge.** Article 5 of Act A has two consecutive versions whose legal force does not overlap. The first ceased to be in force on 31 December 2023, but under a transitional provision of Act B it still applies to proceedings started before 1 January 2024. From that date both versions apply, each with its own rule, while only the second is in force. Article 6 has a version whose ends have not been extracted.
-* **B. A condition is fulfilled.** Regulation R is kept in force and applicable by a condition with two requirements. The first is met on 15 June 2021, the second on 1 March 2022. The second event fulfils the condition and closes both intervals of the regulation, whose last included day is 28 February 2022. Only the final state is stored; the earlier state follows from the event dates at query time.
+- **A. Force and applicability diverge.** Article 5 of Act A has two consecutive versions whose legal force does not overlap. The first ceased to be in force on 31 December 2023, but under a transitional provision of Act B it still applies to proceedings started before 1 January 2024. From that date both versions apply, each with its own rule, while only the second is in force. Article 6 has a version whose ends have not been extracted.
+- **B. A condition is fulfilled.** Regulation R is kept in force and applicable by a condition with two requirements. The first is met on 15 June 2021, the second on 1 March 2022. The second event fulfils the condition and closes both intervals of the regulation, whose last included day is 28 February 2022. Only the final state is stored; the earlier state follows from the event dates at query time.
 
 ## Queries
 
@@ -122,66 +122,66 @@ PREFIX lang: <http://publications.europa.eu/resource/authority/language/>
 
 The parameters are set in the `VALUES` line: the component `?c`, the date `?t` and, in query 1, the language `?l`. In the tables, component and version identifiers are shortened by leaving out `https://w3id.org/telex-kg/id/sluzbeni/`, and `syn:` stands for `https://w3id.org/telex-kg/id/synthetic/`.
 
-### 1\. Which version is in force on a date, with its text or source
+### 1. Which version is in force on a date, with its text or source
 
 Listing 1 in the paper is this query without `?source`.
 
 ```
 SELECT ?v ?text ?source WHERE {
-  VALUES (?c ?t ?l) { (<https://w3id.org/telex-kg/id/sluzbeni/2022/119/1834/art\_107> "2022-12-31"^^xsd:date lang:HRV) }
-  ?v eli:is\_member\_of ?c ; eli:first\_date\_entry\_in\_force ?from .
-  OPTIONAL { ?v eli:date\_no\_longer\_in\_force ?last }
-  FILTER (?from <= ?t \&\& (!BOUND(?last) || ?t <= ?last))
-  OPTIONAL { ?v eli:is\_realized\_by ?u . ?u eli:language ?l .
+  VALUES (?c ?t ?l) { (<https://w3id.org/telex-kg/id/sluzbeni/2022/119/1834/art_107> "2022-12-31"^^xsd:date lang:HRV) }
+  ?v eli:is_member_of ?c ; eli:first_date_entry_in_force ?from .
+  OPTIONAL { ?v eli:date_no_longer_in_force ?last }
+  FILTER (?from <= ?t && (!BOUND(?last) || ?t <= ?last))
+  OPTIONAL { ?v eli:is_realized_by ?u . ?u eli:language ?l .
              OPTIONAL { ?u tlx:text ?text }
              OPTIONAL { ?u tlx:textSource ?source } }
 }
 ```
 
-|`?c`|`?t`|Expected result|
-|-|-|-|
-|`2022/119/1834/art\_107`|2022-10-21|no row: the act is published but not yet in force|
-|`2022/119/1834/art\_107`|2022-10-22|`art\_107/v/2022-10-22`, source OG 119/2022|
-|`2022/119/1834/art\_107`|2022-12-31|`art\_107/v/2022-10-22`, source OG 119/2022 (last included day)|
-|`2022/119/1834/art\_107`|2023-01-01|no row: legal force ended with the introduction of the euro|
-|`2022/119/1834/art\_108`|2022-10-22|no row: not yet in force although the act is|
-|`2022/119/1834/art\_108`|2022-12-31|no row|
-|`2022/119/1834/art\_108`|2023-01-01|`art\_108/v/2023-01-01`, source OG 119/2022|
-|`2022/119/1834/art\_121/par\_3`|2022-12-31|`art\_121/par\_3/v/2022-10-22`, text „Odredbe članka 107. ovoga Zakona prestaju važiti na dan uvođenja eura kao službene valute u Republici Hrvatskoj.“@hr|
-|`2022/151/2330/art\_50`|2023-01-01|`art\_50/v/2022-12-30`, complete text of Article 50 (@hr)|
-|`2010/83/2375/whole`|2022-12-30|`whole/v/2010-07-13`, source OG 83/2010|
-|`syn:act-a/art\_5` (with `lang:ENG`)|2025-06-01|only `syn:act-a/art\_5/v/2024-01-01`, text „An application shall be decided within 30 days.“@en|
+| `?c` | `?t` | Expected result |
+|---|---|---|
+| `2022/119/1834/art_107` | 2022-10-21 | no row: the act is published but not yet in force |
+| `2022/119/1834/art_107` | 2022-10-22 | `art_107/v/2022-10-22`, source OG 119/2022 |
+| `2022/119/1834/art_107` | 2022-12-31 | `art_107/v/2022-10-22`, source OG 119/2022 (last included day) |
+| `2022/119/1834/art_107` | 2023-01-01 | no row: legal force ended with the introduction of the euro |
+| `2022/119/1834/art_108` | 2022-10-22 | no row: not yet in force although the act is |
+| `2022/119/1834/art_108` | 2022-12-31 | no row |
+| `2022/119/1834/art_108` | 2023-01-01 | `art_108/v/2023-01-01`, source OG 119/2022 |
+| `2022/119/1834/art_121/par_3` | 2022-12-31 | `art_121/par_3/v/2022-10-22`, text „Odredbe članka 107. ovoga Zakona prestaju važiti na dan uvođenja eura kao službene valute u Republici Hrvatskoj.“@hr |
+| `2022/151/2330/art_50` | 2023-01-01 | `art_50/v/2022-12-30`, complete text of Article 50 (@hr) |
+| `2010/83/2375/whole` | 2022-12-30 | `whole/v/2010-07-13`, source OG 83/2010 |
+| `syn:act-a/art_5` (with `lang:ENG`) | 2025-06-01 | only `syn:act-a/art_5/v/2024-01-01`, text „An application shall be decided within 30 days.“@en |
 
-### 2\. Which versions apply on a date
+### 2. Which versions apply on a date
 
 ```
 SELECT ?v ?rule ?last ?openApplicabilityEnd WHERE {
-  VALUES (?c ?t) { (<https://w3id.org/telex-kg/id/synthetic/act-a/art\_5> "2025-06-01"^^xsd:date) }
-  ?v eli:is\_member\_of ?c ; eli:date\_applicability ?from .
+  VALUES (?c ?t) { (<https://w3id.org/telex-kg/id/synthetic/act-a/art_5> "2025-06-01"^^xsd:date) }
+  ?v eli:is_member_of ?c ; eli:date_applicability ?from .
   OPTIONAL { ?v tlx:dateNoLongerApplicable ?last }
-  FILTER (?from <= ?t \&\& (!BOUND(?last) || ?t <= ?last))
+  FILTER (?from <= ?t && (!BOUND(?last) || ?t <= ?last))
   OPTIONAL { ?v tlx:applicationRule ?rule }
   OPTIONAL { ?v tlx:openApplicabilityEnd ?openApplicabilityEnd }
 }
 ```
 
-|`?c`|`?t`|Expected result|
-|-|-|-|
-|`syn:act-a/art\_5`|2023-06-01|`v/2020-01-01` with its rule|
-|`syn:act-a/art\_5`|2025-06-01|`v/2020-01-01` (proceedings started before 1 January 2024) and `v/2024-01-01` (proceedings started on or after that date), both with none\_prescribed|
-|`2022/119/1834/art\_107`|2023-06-01|`art\_107/v/2022-10-22` with not\_extracted: the end of applicability is unknown, so the answer is qualified|
-|`syn:regulation-r/whole`|2022-02-28|`v/2015-02-01`, last day applicable 2022-02-28|
-|`syn:regulation-r/whole`|2022-03-01|no row: applicability ended with the fulfilment of the condition|
+| `?c` | `?t` | Expected result |
+|---|---|---|
+| `syn:act-a/art_5` | 2023-06-01 | `v/2020-01-01` with its rule |
+| `syn:act-a/art_5` | 2025-06-01 | `v/2020-01-01` (proceedings started before 1 January 2024) and `v/2024-01-01` (proceedings started on or after that date), both with none_prescribed |
+| `2022/119/1834/art_107` | 2023-06-01 | `art_107/v/2022-10-22` with not_extracted: the end of applicability is unknown, so the answer is qualified |
+| `syn:regulation-r/whole` | 2022-02-28 | `v/2015-02-01`, last day applicable 2022-02-28 |
+| `syn:regulation-r/whole` | 2022-03-01 | no row: applicability ended with the fulfilment of the condition |
 
-On 2025-06-01 query 1 returns only the second version of `syn:act-a/art\_5`: two versions apply, but only one is in force. The application rules are returned as text; the query does not decide which of them covers a given case.
+On 2025-06-01 query 1 returns only the second version of `syn:act-a/art_5`: two versions apply, but only one is in force. The application rules are returned as text; the query does not decide which of them covers a given case.
 
-### 3\. History of a provision
+### 3. History of a provision
 
 ```
 SELECT ?v ?from ?last ?opening ?closing ?appFrom ?appLast ?openApplicabilityEnd WHERE {
-  VALUES (?c) { (<https://w3id.org/telex-kg/id/sluzbeni/2022/119/1834/art\_107>) }
-  ?v eli:is\_member\_of ?c ; eli:first\_date\_entry\_in\_force ?from ; eli:date\_applicability ?appFrom .
-  OPTIONAL { ?v eli:date\_no\_longer\_in\_force ?last }
+  VALUES (?c) { (<https://w3id.org/telex-kg/id/sluzbeni/2022/119/1834/art_107>) }
+  ?v eli:is_member_of ?c ; eli:first_date_entry_in_force ?from ; eli:date_applicability ?appFrom .
+  OPTIONAL { ?v eli:date_no_longer_in_force ?last }
   OPTIONAL { ?v tlx:dateNoLongerApplicable ?appLast }
   OPTIONAL { ?v tlx:openApplicabilityEnd ?openApplicabilityEnd }
   OPTIONAL { ?opening tlx:opens ?v }
@@ -189,28 +189,28 @@ SELECT ?v ?from ?last ?opening ?closing ?appFrom ?appLast ?openApplicabilityEnd 
 } ORDER BY ?from
 ```
 
-|`?c`|Expected result|
-|-|-|
-|`2022/119/1834/art\_107`|one version: in force 2022-10-22 to 2022-12-31, opened by the entry into force of the act and closed by the introduction of the euro; applicable from 2022-10-22, end of applicability not extracted|
-|`syn:act-a/art\_5`|two versions: the first in force 2020-01-01 to 2023-12-31, closed by the amendment, still applicable with none\_prescribed; the second from 2024-01-01, opened by the amendment|
+| `?c` | Expected result |
+|---|---|
+| `2022/119/1834/art_107` | one version: in force 2022-10-22 to 2022-12-31, opened by the entry into force of the act and closed by the introduction of the euro; applicable from 2022-10-22, end of applicability not extracted |
+| `syn:act-a/art_5` | two versions: the first in force 2020-01-01 to 2023-12-31, closed by the amendment, still applicable with none_prescribed; the second from 2024-01-01, opened by the amendment |
 
-### 4\. Qualified status of legal force on a date
+### 4. Qualified status of legal force on a date
 
 A condition qualifies the answer only from its `tlx:effectiveFrom`. Before that day the query returns no reading and says why, instead of assuming that no end was prescribed.
 
 ```
 SELECT DISTINCT ?v ?last ?readingAtT ?qualification ?cond ?effectiveFrom ?fulfilledOn ?checkedOn WHERE {
   VALUES (?c ?t) { (<https://w3id.org/telex-kg/id/sluzbeni/2010/83/2375/whole> "2011-01-01"^^xsd:date) }
-  ?v eli:is\_member\_of ?c ; eli:first\_date\_entry\_in\_force ?from .
-  OPTIONAL { ?v eli:date\_no\_longer\_in\_force ?last }
-  FILTER (?from <= ?t \&\& (!BOUND(?last) || ?t <= ?last))
+  ?v eli:is_member_of ?c ; eli:first_date_entry_in_force ?from .
+  OPTIONAL { ?v eli:date_no_longer_in_force ?last }
+  FILTER (?from <= ?t && (!BOUND(?last) || ?t <= ?last))
   OPTIONAL { ?v tlx:openEnd ?openEnd }
   OPTIONAL { ?v tlx:hasCondition ?cond .
              ?cond tlx:affects tlx:LegalForce ; tlx:effectiveFrom ?effectiveFrom .
              OPTIONAL { ?cond tlx:fulfilledBy/tlx:date ?fulfilledOn }
              OPTIONAL { ?cond tlx:checkedOn ?checkedOn } }
-  BIND (BOUND(?effectiveFrom) \&\& ?effectiveFrom <= ?t
-        \&\& (!BOUND(?fulfilledOn) || ?t < ?fulfilledOn) AS ?inEffect)
+  BIND (BOUND(?effectiveFrom) && ?effectiveFrom <= ?t
+        && (!BOUND(?fulfilledOn) || ?t < ?fulfilledOn) AS ?inEffect)
   BIND (IF(?inEffect, tlx:PendingCondition,
         IF(BOUND(?last) || ?openEnd = tlx:PendingCondition, ?noValue, ?openEnd)) AS ?readingAtT)
   BIND (IF(?inEffect, "The end of legal force depends on a termination condition in effect on this date; no fulfilment on or before this date is recorded.",
@@ -221,40 +221,39 @@ SELECT DISTINCT ?v ?last ?readingAtT ?qualification ?cond ?effectiveFrom ?fulfil
 }
 ```
 
-|`?c`|`?t`|Expected result|
-|-|-|-|
-|`2010/83/2375/whole`|2011-01-01|in force; no reading; qualification: no condition in effect on this date is recorded; condition with effective date 2022-12-30|
-|`2010/83/2375/whole`|2022-12-29|the same as for 2011-01-01|
-|`2010/83/2375/whole`|2022-12-30|in force; pending\_condition; condition in effect; no fulfilment and no check recorded|
-|`2010/83/2375/whole`|2026-09-27|the same as for 2022-12-30|
-|`2022/119/1834/art\_108`|2023-06-01|in force; none\_prescribed|
-|`syn:regulation-r/whole`|2020-06-01|in force; last day in force 2022-02-28 recorded|
-|`syn:regulation-r/whole`|2021-09-01|in force; pending\_condition on that date; the condition was fulfilled on 2022-03-01|
-|`syn:regulation-r/whole`|2022-03-01|no row: no longer in force|
-|`syn:act-a/art\_6`|2021-01-01|in force; not\_extracted|
+| `?c` | `?t` | Expected result |
+|---|---|---|
+| `2010/83/2375/whole` | 2011-01-01 | in force; no reading; qualification: no condition in effect on this date is recorded; condition with effective date 2022-12-30 |
+| `2010/83/2375/whole` | 2022-12-29 | the same as for 2011-01-01 |
+| `2010/83/2375/whole` | 2022-12-30 | in force; pending_condition; condition in effect; no fulfilment and no check recorded |
+| `2010/83/2375/whole` | 2026-09-27 | the same as for 2022-12-30 |
+| `2022/119/1834/art_108` | 2023-06-01 | in force; none_prescribed |
+| `syn:regulation-r/whole` | 2020-06-01 | in force; last day in force 2022-02-28 recorded |
+| `syn:regulation-r/whole` | 2021-09-01 | in force; pending_condition on that date; the condition was fulfilled on 2022-03-01 |
+| `syn:regulation-r/whole` | 2022-03-01 | no row: no longer in force |
+| `syn:act-a/art_6` | 2021-01-01 | in force; not_extracted |
 
 For 27 September 2026 the answer is therefore qualified: the regulation is in force unless both instruments have been adopted, and no check for their adoption is recorded.
 
-### 5\. Requirements of a condition on a date
+### 5. Requirements of a condition on a date
 
 ```
 SELECT ?req ?under ?metOn ?metByT WHERE {
-  VALUES (?cond ?t) { (<https://w3id.org/telex-kg/id/condition/sluzbeni/2022/151/2330/art\_50/sluzbeni/2010/83/2375> "2026-09-27"^^xsd:date) }
+  VALUES (?cond ?t) { (<https://w3id.org/telex-kg/id/condition/sluzbeni/2022/151/2330/art_50/sluzbeni/2010/83/2375> "2026-09-27"^^xsd:date) }
   ?cond tlx:hasRequirement ?req .
   OPTIONAL { ?req tlx:adoptionUnder ?under }
   OPTIONAL { ?req tlx:metBy/tlx:date ?metOn }
-  BIND (BOUND(?metOn) \&\& ?metOn <= ?t AS ?metByT)
+  BIND (BOUND(?metOn) && ?metOn <= ?t AS ?metByT)
 } ORDER BY ?req
 ```
 
-|`?cond`|`?t`|Expected result|
-|-|-|-|
-|condition of Art. 50 for OG 83/2010|2026-09-27|two requirements (Art. 8(3) and Art. 21(3)), neither with a recorded event|
-|`syn:condition/act-d/art\_30/regulation-r`|2021-09-01|requirement 1 met on 2021-06-15; requirement 2 not yet met|
-|`syn:condition/act-d/art\_30/regulation-r`|2022-03-01|both requirements met|
+| `?cond` | `?t` | Expected result |
+|---|---|---|
+| condition of Art. 50 for OG 83/2010 | 2026-09-27 | two requirements (Art. 8(3) and Art. 21(3)), neither with a recorded event |
+| `syn:condition/act-d/art_30/regulation-r` | 2021-09-01 | requirement 1 met on 2021-06-15; requirement 2 not yet met |
+| `syn:condition/act-d/art_30/regulation-r` | 2022-03-01 | both requirements met |
 
 The query reports only what has been entered. Whether the instruments have been adopted in fact is established by checking the sources and entering the events.
-
 ## ChatGPT question and responses, 28 August 2026 (Section 5.2)
 
 ChatGPT Free (OpenAI), 28 August 2026. The question was posed in Croatian.
@@ -370,12 +369,12 @@ The question of Section 5.2 was posed again on 27 September 2026 in ChatGPT, wit
 
 An earlier run of setting 3a, made without the instruction not to search the web, gave an answer of the same kind; it is reproduced at the end. These are single runs. They illustrate how the answer depends on what the model is given and are not an evaluation.
 
-|Setting|Given with the question|Conclusion of the response|
-|-|-|-|
-|1|nothing|describes a generic transitional rule; the regulation "may still be considered valid" until a new regulation replaces it|
-|2|OG 83/2010 and OG 151/2022 (PDF)|identifies Article 50 and both requirements; whether the regulation is in force today depends on whether both instruments have been adopted, which has to be checked|
-|3a|data recorded in the graph|identifies Article 50 and both requirements; reads the absence of a recorded adoption as evidence that the regulation is still in force|
-|3b|the same data and the meaning of the status|identifies Article 50 and both requirements; the current status cannot be confirmed from the data and has to be checked|
+| Setting | Given with the question | Conclusion of the response |
+|---|---|---|
+| 1 | nothing | describes a generic transitional rule; the regulation "may still be considered valid" until a new regulation replaces it |
+| 2 | OG 83/2010 and OG 151/2022 (PDF) | identifies Article 50 and both requirements; whether the regulation is in force today depends on whether both instruments have been adopted, which has to be checked |
+| 3a | data recorded in the graph | identifies Article 50 and both requirements; reads the absence of a recorded adoption as evidence that the regulation is still in force |
+| 3b | the same data and the meaning of the status | identifies Article 50 and both requirements; the current status cannot be confirmed from the data and has to be checked |
 
 ### Prompts
 
@@ -437,7 +436,7 @@ DATA FROM THE DATABASE
 4. This condition concerns the legal force of the Regulation and takes effect from 30 December 2022. It is fulfilled only when both requirements are met: (a) the adoption of the Quality Standards under Article 8(3) of Act OG 151/2022 and (b) the adoption of the decision on the form and detailed content of the licence under Article 21(3) of Act OG 151/2022.
 
 5. The database records the adoption of neither of these two acts, nor does it record a check of the sources for their adoption.
-   \[Setting 3b adds:] This does not mean that the acts have not been adopted, only that their adoption has not been checked in the database.
+   [Setting 3b adds:] This does not mean that the acts have not been adopted, only that their adoption has not been checked in the database.
 
 6. The end of the applicability of the Regulation has not been established: the sources in the database do not state whether the Regulation is applied after its legal force ends.
 
@@ -573,4 +572,3 @@ CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/). Excerpts of legal prov
 ## Citation
 
 Please cite the paper and this resource: https://github.com/amestrovic/TeLex-KG.
-
