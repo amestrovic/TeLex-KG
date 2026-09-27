@@ -1,0 +1,497 @@
+# SHACL shapes for TeLex-KG, version 1.2.0
+#
+# Date convention: upper bounds are stored as last included days (as in ELI), so an
+# event that closes an interval falls on the stored last day plus one day.
+#
+# Contents
+#   C1, C2      overlap of versions of the same component (SHACL-SPARQL)
+#   C3          readings of absent ends, for legal force and applicability, and their
+#               agreement with termination conditions
+#   events      dates of opening and closing events agree with interval bounds; each
+#               check applies only to the relation that has that role
+#   structure   versions, components, text units, events
+#   conditions  description, temporal effect, status, requirements, fulfilment
+#
+# The shapes are meant to be run without RDFS inference: domain and range inference
+# would type an undescribed resource and hide a missing description.
+
+@prefix sh:      <http://www.w3.org/ns/shacl#> .
+@prefix tlx:     <https://w3id.org/telex-kg/ontology#> .
+@prefix tlxs:    <https://w3id.org/telex-kg/shapes#> .
+@prefix eli:     <http://data.europa.eu/eli/ontology#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix owl:     <http://www.w3.org/2002/07/owl#> .
+
+<https://w3id.org/telex-kg/shapes>
+    a owl:Ontology ;
+    owl:versionInfo "1.2.0" ;
+    sh:declare
+        [ sh:prefix "eli" ; sh:namespace "http://data.europa.eu/eli/ontology#"^^xsd:anyURI ] ,
+        [ sh:prefix "tlx" ; sh:namespace "https://w3id.org/telex-kg/ontology#"^^xsd:anyURI ] ,
+        [ sh:prefix "xsd" ; sh:namespace "http://www.w3.org/2001/XMLSchema#"^^xsd:anyURI ] .
+
+# ===========================================================================
+# C1: intervals of legal force of versions of the same component do not overlap
+# ===========================================================================
+
+tlxs:C1 a sh:NodeShape ;
+    sh:targetClass tlx:TemporalVersion ;
+    sh:sparql [
+        a sh:SPARQLConstraint ;
+        sh:message "C1: versions of the same component overlap on the in-force axis" ;
+        sh:prefixes <https://w3id.org/telex-kg/shapes> ;
+        sh:select """
+            SELECT $this ?value WHERE {
+                $this eli:is_member_of ?c ;
+                      eli:first_date_entry_in_force ?f1 .
+                ?value eli:is_member_of ?c ;
+                       eli:first_date_entry_in_force ?f2 .
+                FILTER (?value != $this)
+                OPTIONAL { $this eli:date_no_longer_in_force ?l1 }
+                OPTIONAL { ?value eli:date_no_longer_in_force ?l2 }
+                BIND (COALESCE(?l1, "9999-12-31"^^xsd:date) AS ?e1)
+                BIND (COALESCE(?l2, "9999-12-31"^^xsd:date) AS ?e2)
+                FILTER (?f1 <= ?e2 && ?f2 <= ?e1)
+            }
+        """ ;
+    ] .
+
+# ===========================================================================
+# C2: overlapping intervals of applicability require an application_rule on each
+# overlapping version. The rule is text; the graph does not evaluate it.
+# ===========================================================================
+
+tlxs:C2 a sh:NodeShape ;
+    sh:targetClass tlx:TemporalVersion ;
+    sh:sparql [
+        a sh:SPARQLConstraint ;
+        sh:message "C2: application intervals of versions of the same component overlap, but this version has no application_rule" ;
+        sh:prefixes <https://w3id.org/telex-kg/shapes> ;
+        sh:select """
+            SELECT $this ?value WHERE {
+                $this eli:is_member_of ?c ;
+                      eli:date_applicability ?a1 .
+                ?value eli:is_member_of ?c ;
+                       eli:date_applicability ?a2 .
+                FILTER (?value != $this)
+                OPTIONAL { $this tlx:dateNoLongerApplicable ?b1 }
+                OPTIONAL { ?value tlx:dateNoLongerApplicable ?b2 }
+                BIND (COALESCE(?b1, "9999-12-31"^^xsd:date) AS ?e1)
+                BIND (COALESCE(?b2, "9999-12-31"^^xsd:date) AS ?e2)
+                FILTER (?a1 <= ?e2 && ?a2 <= ?e1)
+                FILTER NOT EXISTS { $this tlx:applicationRule ?rule }
+            }
+        """ ;
+    ] .
+
+# ===========================================================================
+# C3: each dimension has either one end date or one reading of the absent end
+# ===========================================================================
+
+tlxs:C3Force a sh:NodeShape ;
+    sh:targetClass tlx:TemporalVersion ;
+    sh:message "C3: for legal force, a version has either a last day in force or an open_end reading, not both and not neither" ;
+    sh:xone (
+        [ sh:path eli:date_no_longer_in_force ; sh:minCount 1 ]
+        [ sh:path tlx:openEnd ; sh:minCount 1 ]
+    ) ;
+    sh:property [
+        sh:path tlx:openEnd ;
+        sh:maxCount 1 ;
+        sh:in ( tlx:NonePrescribed tlx:PendingCondition tlx:NotExtracted ) ;
+        sh:message "C3: open_end of legal force must be a single value: none_prescribed, pending_condition or not_extracted" ;
+    ] .
+
+tlxs:C3Applicability a sh:NodeShape ;
+    sh:targetClass tlx:TemporalVersion ;
+    sh:message "C3: for applicability, a version has either a last day applicable or an open_end reading, not both and not neither" ;
+    sh:xone (
+        [ sh:path tlx:dateNoLongerApplicable ; sh:minCount 1 ]
+        [ sh:path tlx:openApplicabilityEnd ; sh:minCount 1 ]
+    ) ;
+    sh:property [
+        sh:path tlx:openApplicabilityEnd ;
+        sh:maxCount 1 ;
+        sh:in ( tlx:NonePrescribed tlx:PendingCondition tlx:NotExtracted ) ;
+        sh:message "C3: open_end of applicability must be a single value: none_prescribed, pending_condition or not_extracted" ;
+    ] .
+
+tlxs:C3PendingForce a sh:NodeShape ;
+    sh:targetClass tlx:TemporalVersion ;
+    sh:message "C3: open_end of legal force is pending_condition, but the version has no described TerminationCondition that affects legal force and has no recorded fulfilment" ;
+    sh:or (
+        [ sh:not [ sh:path tlx:openEnd ; sh:hasValue tlx:PendingCondition ] ]
+        [ sh:path tlx:hasCondition ;
+          sh:qualifiedValueShape [
+              sh:class tlx:TerminationCondition ;
+              sh:property [ sh:path tlx:affects ; sh:hasValue tlx:LegalForce ] ;
+              sh:property [ sh:path tlx:fulfilledBy ; sh:maxCount 0 ] ] ;
+          sh:qualifiedMinCount 1 ]
+    ) .
+
+tlxs:C3PendingApplicability a sh:NodeShape ;
+    sh:targetClass tlx:TemporalVersion ;
+    sh:message "C3: open_end of applicability is pending_condition, but the version has no described TerminationCondition that affects applicability and has no recorded fulfilment" ;
+    sh:or (
+        [ sh:not [ sh:path tlx:openApplicabilityEnd ; sh:hasValue tlx:PendingCondition ] ]
+        [ sh:path tlx:hasCondition ;
+          sh:qualifiedValueShape [
+              sh:class tlx:TerminationCondition ;
+              sh:property [ sh:path tlx:affects ; sh:hasValue tlx:Applicability ] ;
+              sh:property [ sh:path tlx:fulfilledBy ; sh:maxCount 0 ] ] ;
+          sh:qualifiedMinCount 1 ]
+    ) .
+
+tlxs:C3ConsistencyForce a sh:NodeShape ;
+    sh:targetClass tlx:TemporalVersion ;
+    sh:sparql [
+        a sh:SPARQLConstraint ;
+        sh:message "C3: the version has an unresolved TerminationCondition that affects legal force and no end of legal force, so open_end must be pending_condition (not none_prescribed or not_extracted)" ;
+        sh:prefixes <https://w3id.org/telex-kg/shapes> ;
+        sh:select """
+            SELECT $this ?value WHERE {
+                $this tlx:hasCondition ?value .
+                ?value tlx:affects tlx:LegalForce .
+                FILTER NOT EXISTS { ?value tlx:fulfilledBy ?e }
+                FILTER NOT EXISTS { $this eli:date_no_longer_in_force ?l }
+                FILTER NOT EXISTS { $this tlx:openEnd tlx:PendingCondition }
+            }
+        """ ;
+    ] .
+
+tlxs:C3ConsistencyApplicability a sh:NodeShape ;
+    sh:targetClass tlx:TemporalVersion ;
+    sh:sparql [
+        a sh:SPARQLConstraint ;
+        sh:message "C3: the version has an unresolved TerminationCondition that affects applicability and no end of applicability, so its open_end must be pending_condition" ;
+        sh:prefixes <https://w3id.org/telex-kg/shapes> ;
+        sh:select """
+            SELECT $this ?value WHERE {
+                $this tlx:hasCondition ?value .
+                ?value tlx:affects tlx:Applicability .
+                FILTER NOT EXISTS { ?value tlx:fulfilledBy ?e }
+                FILTER NOT EXISTS { $this tlx:dateNoLongerApplicable ?l }
+                FILTER NOT EXISTS { $this tlx:openApplicabilityEnd tlx:PendingCondition }
+            }
+        """ ;
+    ] .
+
+# ===========================================================================
+# Events and interval bounds. tlx:opens / tlx:closes act on legal force,
+# tlx:opensApplicability / tlx:closesApplicability on applicability.
+# ===========================================================================
+
+tlxs:EventBounds a sh:NodeShape ;
+    sh:targetClass tlx:TemporalVersion ;
+    sh:sparql [
+        a sh:SPARQLConstraint ;
+        sh:message "events: no ChangeEvent opens the legal force of the version (tlx:opens) on its first day in force" ;
+        sh:prefixes <https://w3id.org/telex-kg/shapes> ;
+        sh:select """
+            SELECT $this WHERE {
+                $this eli:first_date_entry_in_force ?f .
+                FILTER NOT EXISTS { ?e tlx:opens $this ; tlx:date ?f }
+            }
+        """ ;
+    ] , [
+        a sh:SPARQLConstraint ;
+        sh:message "events: no ChangeEvent opens the applicability of the version (tlx:opensApplicability) on its first day of applicability" ;
+        sh:prefixes <https://w3id.org/telex-kg/shapes> ;
+        sh:select """
+            SELECT $this WHERE {
+                $this eli:date_applicability ?a .
+                FILTER NOT EXISTS { ?e tlx:opensApplicability $this ; tlx:date ?a }
+            }
+        """ ;
+    ] , [
+        a sh:SPARQLConstraint ;
+        sh:message "events: the date of an event that opens legal force (tlx:opens) differs from the first day in force" ;
+        sh:prefixes <https://w3id.org/telex-kg/shapes> ;
+        sh:select """
+            SELECT $this ?value WHERE {
+                ?value tlx:opens $this ; tlx:date ?d .
+                $this eli:first_date_entry_in_force ?f .
+                FILTER (?d != ?f)
+            }
+        """ ;
+    ] , [
+        a sh:SPARQLConstraint ;
+        sh:message "events: the date of an event that opens applicability (tlx:opensApplicability) differs from the first day of applicability" ;
+        sh:prefixes <https://w3id.org/telex-kg/shapes> ;
+        sh:select """
+            SELECT $this ?value WHERE {
+                ?value tlx:opensApplicability $this ; tlx:date ?d .
+                $this eli:date_applicability ?a .
+                FILTER (?d != ?a)
+            }
+        """ ;
+    ] , [
+        a sh:SPARQLConstraint ;
+        sh:message "events: the last day in force is not justified by an event that closes legal force (tlx:closes) on the following day" ;
+        sh:prefixes <https://w3id.org/telex-kg/shapes> ;
+        sh:select """
+            SELECT $this WHERE {
+                $this eli:date_no_longer_in_force ?l .
+                FILTER NOT EXISTS {
+                    ?e tlx:closes $this ; tlx:date ?d .
+                    FILTER (?d = ?l + "P1D"^^xsd:dayTimeDuration)
+                }
+            }
+        """ ;
+    ] , [
+        a sh:SPARQLConstraint ;
+        sh:message "events: the last day applicable is not justified by an event that closes applicability (tlx:closesApplicability) on the following day" ;
+        sh:prefixes <https://w3id.org/telex-kg/shapes> ;
+        sh:select """
+            SELECT $this WHERE {
+                $this tlx:dateNoLongerApplicable ?m .
+                FILTER NOT EXISTS {
+                    ?e tlx:closesApplicability $this ; tlx:date ?d .
+                    FILTER (?d = ?m + "P1D"^^xsd:dayTimeDuration)
+                }
+            }
+        """ ;
+    ] , [
+        a sh:SPARQLConstraint ;
+        sh:message "events: an event that closes legal force (tlx:closes) must fall on the last day in force plus one day, and the version must have a last day in force" ;
+        sh:prefixes <https://w3id.org/telex-kg/shapes> ;
+        sh:select """
+            SELECT $this ?value WHERE {
+                ?value tlx:closes $this ; tlx:date ?d .
+                OPTIONAL { $this eli:date_no_longer_in_force ?l }
+                FILTER (!BOUND(?l) || ?d != ?l + "P1D"^^xsd:dayTimeDuration)
+            }
+        """ ;
+    ] , [
+        a sh:SPARQLConstraint ;
+        sh:message "events: an event that closes applicability (tlx:closesApplicability) must fall on the last day applicable plus one day, and the version must have a last day applicable" ;
+        sh:prefixes <https://w3id.org/telex-kg/shapes> ;
+        sh:select """
+            SELECT $this ?value WHERE {
+                ?value tlx:closesApplicability $this ; tlx:date ?d .
+                OPTIONAL { $this tlx:dateNoLongerApplicable ?m }
+                FILTER (!BOUND(?m) || ?d != ?m + "P1D"^^xsd:dayTimeDuration)
+            }
+        """ ;
+    ] .
+
+# ===========================================================================
+# Structure
+# ===========================================================================
+
+tlxs:LegalWorkShape a sh:NodeShape ;
+    sh:targetClass tlx:LegalWork ;
+    sh:property [ sh:path dcterms:title ; sh:minCount 1 ;
+                  sh:message "structural: a LegalWork needs a title (dcterms:title)" ] ;
+    sh:property [ sh:path eli:jurisdiction ; sh:maxCount 1 ; sh:nodeKind sh:IRI ] ;
+    sh:property [ sh:path eli:date_publication ; sh:maxCount 1 ; sh:datatype xsd:date ] ;
+    sh:property [ sh:path eli:date_document ; sh:maxCount 1 ; sh:datatype xsd:date ] .
+
+tlxs:ComponentShape a sh:NodeShape ;
+    sh:targetClass tlx:Component ;
+    sh:property [ sh:path eli:is_part_of ; sh:minCount 1 ; sh:maxCount 1 ;
+                  sh:or ( [ sh:class tlx:LegalWork ] [ sh:class tlx:Component ] ) ;
+                  sh:message "structural: a Component has exactly one parent, which is a LegalWork or a Component" ] ;
+    sh:property [ sh:path eli:type_subdivision ; sh:minCount 1 ; sh:maxCount 1 ] ;
+    sh:property [ sh:path eli:number ; sh:maxCount 1 ] ;
+    sh:sparql [
+        a sh:SPARQLConstraint ;
+        sh:message "structural: the component is its own ancestor (self-reference or cycle in the hierarchy)" ;
+        sh:prefixes <https://w3id.org/telex-kg/shapes> ;
+        sh:select """
+            SELECT $this WHERE { $this eli:is_part_of+ $this }
+        """ ;
+    ] .
+
+tlxs:TemporalVersionShape a sh:NodeShape ;
+    sh:targetClass tlx:TemporalVersion ;
+    sh:property [ sh:path eli:is_member_of ; sh:minCount 1 ; sh:maxCount 1 ; sh:class tlx:Component ;
+                  sh:message "structural: a TemporalVersion belongs to exactly one Component" ] ;
+    sh:property [ sh:path eli:first_date_entry_in_force ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:date ;
+                  sh:message "structural: a TemporalVersion has exactly one start of legal force, of type xsd:date" ] ;
+    sh:property [ sh:path eli:first_date_entry_in_force ;
+                  sh:lessThanOrEquals eli:date_no_longer_in_force ;
+                  sh:message "structural: the last day in force lies before the start of legal force" ] ;
+    sh:property [ sh:path eli:date_no_longer_in_force ; sh:maxCount 1 ; sh:datatype xsd:date ] ;
+    sh:property [ sh:path eli:date_applicability ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:date ;
+                  sh:message "structural: a TemporalVersion has exactly one start of applicability, of type xsd:date" ] ;
+    sh:property [ sh:path eli:date_applicability ;
+                  sh:lessThanOrEquals tlx:dateNoLongerApplicable ;
+                  sh:message "structural: the last day applicable lies before the start of applicability" ] ;
+    sh:property [ sh:path tlx:dateNoLongerApplicable ; sh:maxCount 1 ; sh:datatype xsd:date ] ;
+    sh:property [ sh:path tlx:applicationRule ; sh:datatype rdf:langString ] ;
+    sh:property [ sh:path tlx:hasCondition ; sh:class tlx:TerminationCondition ;
+                  sh:message "structural: HAS_CONDITION must point to a TerminationCondition" ] ;
+    sh:property [ sh:path eli:is_realized_by ; sh:minCount 1 ; sh:class tlx:TextUnit ;
+                  sh:message "structural: a TemporalVersion has at least one TextUnit" ] ;
+    sh:sparql [
+        a sh:SPARQLConstraint ;
+        sh:message "structural: a TemporalVersion has more than one TextUnit in the same language" ;
+        sh:prefixes <https://w3id.org/telex-kg/shapes> ;
+        sh:select """
+            SELECT $this ?value WHERE {
+                $this eli:is_realized_by ?u1 , ?u2 .
+                ?u1 eli:language ?value .
+                ?u2 eli:language ?value .
+                FILTER (?u1 != ?u2)
+            }
+        """ ;
+    ] .
+
+tlxs:TextUnitShape a sh:NodeShape ;
+    sh:targetClass tlx:TextUnit ;
+    sh:property [ sh:path eli:language ; sh:minCount 1 ; sh:maxCount 1 ; sh:nodeKind sh:IRI ;
+                  sh:pattern "^http://publications\\.europa\\.eu/resource/authority/language/[A-Z]{3}$" ;
+                  sh:message "structural: a TextUnit has exactly one language, an IRI from the EU language authority table" ] ;
+    sh:property [ sh:path tlx:text ; sh:maxCount 1 ; sh:datatype rdf:langString ;
+                  sh:message "structural: tlx:text must be one language-tagged string" ] ;
+    sh:property [ sh:path tlx:textSource ; sh:nodeKind sh:IRI ;
+                  sh:message "structural: tlx:textSource must be an IRI" ] ;
+    sh:property [ sh:path dcterms:source ; sh:nodeKind sh:IRI ] ;
+    sh:sparql [
+        a sh:SPARQLConstraint ;
+        sh:message "structural: the language tag of tlx:text does not match eli:language of the TextUnit" ;
+        sh:prefixes <https://w3id.org/telex-kg/shapes> ;
+        sh:select """
+            SELECT $this ?value WHERE {
+                $this tlx:text ?value ; eli:language ?code .
+                BIND (STRAFTER(STR(?code), "http://publications.europa.eu/resource/authority/language/") AS ?c3)
+                BIND ("|BUL:bg|CES:cs|DAN:da|DEU:de|ELL:el|ENG:en|EST:et|FIN:fi|FRA:fr|GLE:ga|HRV:hr|HUN:hu|ITA:it|LAV:lv|LIT:lt|MLT:mt|NLD:nl|POL:pl|POR:pt|RON:ro|SLK:sk|SLV:sl|SPA:es|SWE:sv|" AS ?map)
+                BIND (STRBEFORE(STRAFTER(?map, CONCAT("|", ?c3, ":")), "|") AS ?tag)
+                FILTER (?tag != "" && !langMatches(lang(?value), ?tag))
+            }
+        """ ;
+    ] .
+
+tlxs:TextUnitContentShape a sh:NodeShape ;
+    sh:targetClass tlx:TextUnit ;
+    sh:or (
+        [ sh:path tlx:text ; sh:minCount 1 ]
+        [ sh:path tlx:textSource ; sh:minCount 1 ]
+    ) ;
+    sh:message "structural: a TextUnit has a text or a reference to its official source" .
+
+tlxs:ChangeEventShape a sh:NodeShape ;
+    sh:targetClass tlx:ChangeEvent ;
+    sh:property [ sh:path tlx:eventType ; sh:minCount 1 ; sh:maxCount 1 ; sh:nodeKind sh:IRI ] ;
+    sh:property [ sh:path tlx:date ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:date ;
+                  sh:message "structural: a ChangeEvent has exactly one date, of type xsd:date" ] ;
+    sh:property [ sh:path tlx:causedBy ; sh:minCount 1 ; sh:maxCount 1 ; sh:class tlx:LegalWork ;
+                  sh:message "structural: a ChangeEvent is caused by exactly one LegalWork" ] ;
+    sh:property [ sh:path tlx:opens ; sh:class tlx:TemporalVersion ] ;
+    sh:property [ sh:path tlx:closes ; sh:class tlx:TemporalVersion ] ;
+    sh:property [ sh:path tlx:opensApplicability ; sh:class tlx:TemporalVersion ] ;
+    sh:property [ sh:path tlx:closesApplicability ; sh:class tlx:TemporalVersion ] .
+
+# ===========================================================================
+# Termination conditions
+# ===========================================================================
+
+tlxs:TerminationConditionShape a sh:NodeShape ;
+    sh:targetClass tlx:TerminationCondition ;
+    sh:property [ sh:path tlx:condition ; sh:minCount 1 ; sh:datatype rdf:langString ;
+                  sh:message "condition: a TerminationCondition states the condition as a language-tagged string" ] ;
+    sh:property [ sh:path tlx:prescribedBy ; sh:minCount 1 ; sh:maxCount 1 ; sh:class tlx:LegalWork ;
+                  sh:message "condition: a TerminationCondition is prescribed by exactly one LegalWork" ] ;
+    sh:property [ sh:path tlx:prescribingProvision ; sh:minCount 1 ; sh:maxCount 1 ; sh:class tlx:Component ;
+                  sh:message "condition: a TerminationCondition names exactly one prescribing provision" ] ;
+    sh:property [ sh:path tlx:affects ; sh:minCount 1 ; sh:maxCount 2 ;
+                  sh:in ( tlx:LegalForce tlx:Applicability ) ;
+                  sh:message "condition: a TerminationCondition states whether it affects legal force, applicability or both" ] ;
+    sh:property [ sh:path tlx:effectiveFrom ; sh:minCount 1 ; sh:maxCount 1 ; sh:datatype xsd:date ;
+                  sh:message "condition: a TerminationCondition has exactly one effective_from date" ] ;
+    sh:property [ sh:path tlx:status ; sh:minCount 1 ; sh:maxCount 1 ;
+                  sh:in ( tlx:Fulfilled tlx:NoRecordedFulfilment ) ;
+                  sh:message "condition: a TerminationCondition has exactly one status, fulfilled or no recorded fulfilment" ] ;
+    sh:property [ sh:path tlx:checkedOn ; sh:maxCount 1 ; sh:datatype xsd:date ] ;
+    sh:property [ sh:path tlx:fulfilledBy ; sh:maxCount 1 ; sh:class tlx:ChangeEvent ;
+                  sh:message "condition: FULFILLED_BY must point to one ChangeEvent" ] ;
+    sh:property [ sh:path tlx:hasRequirement ; sh:class tlx:Requirement ] ;
+    sh:sparql [
+        a sh:SPARQLConstraint ;
+        sh:message "condition: effective_from lies before the entry into force of every version of the prescribing provision, or the provision has no version" ;
+        sh:prefixes <https://w3id.org/telex-kg/shapes> ;
+        sh:select """
+            SELECT $this ?value WHERE {
+                $this tlx:prescribingProvision ?p ; tlx:effectiveFrom ?value .
+                FILTER NOT EXISTS {
+                    ?pv eli:is_member_of ?p ; eli:first_date_entry_in_force ?f .
+                    FILTER (?f <= ?value)
+                }
+            }
+        """ ;
+    ] , [
+        a sh:SPARQLConstraint ;
+        sh:message "condition: status is fulfilled, but a requirement has no recorded event" ;
+        sh:prefixes <https://w3id.org/telex-kg/shapes> ;
+        sh:select """
+            SELECT $this ?value WHERE {
+                $this tlx:status tlx:Fulfilled ; tlx:hasRequirement ?value .
+                FILTER NOT EXISTS { ?value tlx:metBy ?e }
+            }
+        """ ;
+    ] , [
+        a sh:SPARQLConstraint ;
+        sh:message "condition: every requirement has a recorded event, so the status must be fulfilled" ;
+        sh:prefixes <https://w3id.org/telex-kg/shapes> ;
+        sh:select """
+            SELECT $this WHERE {
+                $this tlx:status tlx:NoRecordedFulfilment ; tlx:hasRequirement ?r0 .
+                FILTER NOT EXISTS { $this tlx:hasRequirement ?r . FILTER NOT EXISTS { ?r tlx:metBy ?e } }
+            }
+        """ ;
+    ] , [
+        a sh:SPARQLConstraint ;
+        sh:message "condition: FULFILLED_BY must be the event that met the last requirement" ;
+        sh:prefixes <https://w3id.org/telex-kg/shapes> ;
+        sh:select """
+            SELECT $this ?value WHERE {
+                $this tlx:fulfilledBy ?value ; tlx:hasRequirement ?r0 .
+                ?value tlx:date ?fd .
+                FILTER ( NOT EXISTS { $this tlx:hasRequirement ?r1 . ?r1 tlx:metBy ?value }
+                         || EXISTS { $this tlx:hasRequirement ?r2 . ?r2 tlx:metBy ?e2 . ?e2 tlx:date ?d2 . FILTER (?d2 > ?fd) } )
+            }
+        """ ;
+    ] , [
+        a sh:SPARQLConstraint ;
+        sh:message "condition: the condition affects legal force, so its fulfilling event must close the legal force (tlx:closes) of every version that has it" ;
+        sh:prefixes <https://w3id.org/telex-kg/shapes> ;
+        sh:select """
+            SELECT $this ?value WHERE {
+                $this tlx:affects tlx:LegalForce ; tlx:fulfilledBy ?f .
+                ?value tlx:hasCondition $this .
+                FILTER NOT EXISTS { ?f tlx:closes ?value }
+            }
+        """ ;
+    ] , [
+        a sh:SPARQLConstraint ;
+        sh:message "condition: the condition affects applicability, so its fulfilling event must close the applicability (tlx:closesApplicability) of every version that has it" ;
+        sh:prefixes <https://w3id.org/telex-kg/shapes> ;
+        sh:select """
+            SELECT $this ?value WHERE {
+                $this tlx:affects tlx:Applicability ; tlx:fulfilledBy ?f .
+                ?value tlx:hasCondition $this .
+                FILTER NOT EXISTS { ?f tlx:closesApplicability ?value }
+            }
+        """ ;
+    ] .
+
+tlxs:ConditionStatusShape a sh:NodeShape ;
+    sh:targetClass tlx:TerminationCondition ;
+    sh:xone (
+        [ sh:and (
+            [ sh:path tlx:status ; sh:hasValue tlx:Fulfilled ]
+            [ sh:path tlx:fulfilledBy ; sh:minCount 1 ] ) ]
+        [ sh:and (
+            [ sh:path tlx:status ; sh:hasValue tlx:NoRecordedFulfilment ]
+            [ sh:path tlx:fulfilledBy ; sh:maxCount 0 ] ) ]
+    ) ;
+    sh:message "condition: status must be fulfilled if FULFILLED_BY is present and no recorded fulfilment otherwise" .
+
+tlxs:RequirementShape a sh:NodeShape ;
+    sh:targetClass tlx:Requirement ;
+    sh:property [ sh:path tlx:requirementText ; sh:minCount 1 ; sh:datatype rdf:langString ] ;
+    sh:property [ sh:path tlx:adoptionUnder ; sh:maxCount 1 ; sh:class tlx:Component ] ;
+    sh:property [ sh:path tlx:metBy ; sh:maxCount 1 ; sh:class tlx:ChangeEvent ] .

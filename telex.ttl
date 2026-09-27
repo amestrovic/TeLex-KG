@@ -1,0 +1,278 @@
+# TeLex-KG ontology: RDF realisation of the TeLex-KG schema, version 1.2.0
+#
+# Reuses the ELI ontology (http://data.europa.eu/eli/ontology#) wherever it has a
+# matching construct and adds the namespace tlx: for the rest.
+#
+# Date convention (both temporal dimensions)
+#   The schema in the paper uses half-open intervals [from, to>. In RDF, as in ELI,
+#   an upper bound is stored as the LAST INCLUDED DAY: eli:date_no_longer_in_force for
+#   legal force and tlx:dateNoLongerApplicable for applicability. The exclusive upper
+#   bound of the paper is the day after the stored date, and an event that closes an
+#   interval falls on that day. A version is therefore in force on day t when
+#   first_date_entry_in_force <= t <= date_no_longer_in_force, and queries compare
+#   stored upper bounds inclusively. Example: Article 107 of OG 119/2022 is in force
+#   up to and including 31 December 2022; the event that ends it takes effect on
+#   1 January 2023.
+#
+# Scope of assertions
+#   Readings of an absent end (NonePrescribed, PendingCondition, NotExtracted) and the
+#   status of a termination condition are statements about the sources included in
+#   the graph, not about the legal order as a whole.
+#
+# Identifiers
+#   IRIs in the namespace https://w3id.org/telex-kg/ are identifiers minted for this
+#   resource. Redirects are not configured, so they do not resolve to documents.
+
+@prefix tlx:     <https://w3id.org/telex-kg/ontology#> .
+@prefix eli:     <http://data.europa.eu/eli/ontology#> .
+@prefix owl:     <http://www.w3.org/2002/07/owl#> .
+@prefix rdf:     <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+@prefix skos:    <http://www.w3.org/2004/02/skos/core#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+
+<https://w3id.org/telex-kg/ontology>
+    a owl:Ontology ;
+    dcterms:title "TeLex-KG ontology"@en ;
+    dcterms:description "RDF realisation of the TeLex-KG schema for point-in-time representation of legal provisions. Upper bounds of both intervals are stored as last included days, as in ELI; the exclusive upper bound of the half-open intervals in the paper is the day after the stored date. Readings of absent ends and statuses of conditions refer to the sources included in the graph."@en ;
+    owl:versionInfo "1.2.0" ;
+    owl:imports <http://data.europa.eu/eli/ontology> ;
+    dcterms:license <https://creativecommons.org/licenses/by/4.0/> .
+
+# ===========================================================================
+# Node types
+# ===========================================================================
+
+tlx:LegalWork a owl:Class ;
+    rdfs:subClassOf eli:LegalResource ;
+    rdfs:label "LegalWork"@en ;
+    rdfs:comment "A legal act as such, independent of any version of its text. Its IRI is the ELI of the act. Its title is given with dcterms:title, because the domain of eli:title is eli:Expression and using it on a work would type the work as an expression."@en .
+
+tlx:Component a owl:Class ;
+    rdfs:subClassOf eli:LegalResourceSubdivision ;
+    rdfs:label "Component"@en ;
+    rdfs:comment "A structural unit of an act (part, chapter, article, paragraph, point, indent, or the whole enacting text). Linked to exactly one parent, a LegalWork or a Component, with eli:is_part_of."@en .
+
+tlx:TemporalVersion a owl:Class ;
+    rdfs:subClassOf eli:LegalResource ;
+    rdfs:label "TemporalVersion"@en ;
+    rdfs:comment "One version of the content of a component, with an interval of legal force and an interval of applicability, which are modelled and closed independently. Linked to its component with eli:is_member_of."@en .
+
+tlx:TextUnit a owl:Class ;
+    rdfs:subClassOf eli:LegalExpression ;
+    rdfs:label "TextUnit"@en ;
+    rdfs:comment "The text of one temporal version in one language. Linked from the version with eli:is_realized_by. A version has at most one text unit per language."@en .
+
+tlx:ChangeEvent a owl:Class ;
+    rdfs:label "ChangeEvent"@en ;
+    rdfs:comment "A legislative event with a date and the act that causes it. It opens or closes intervals of temporal versions; the relation used states which interval is affected."@en .
+
+tlx:TerminationCondition a owl:Class ;
+    rdfs:label "TerminationCondition"@en ;
+    rdfs:comment "A prescribed condition under which a version ceases to be in force, to be applicable, or both (tlx:affects), and whose date may not yet be known. It has legal effect from tlx:effectiveFrom. It may consist of several requirements, all of which must be met. Fulfilment is not detected automatically: it is entered explicitly (FULFILLED_BY, tlx:metBy) after the sources have been checked, and the shapes check only the consistency of what is entered."@en .
+
+tlx:Requirement a owl:Class ;
+    rdfs:label "Requirement"@en ;
+    rdfs:comment "One event that must occur for a termination condition to be fulfilled, for example the adoption of an instrument under a given provision. The requirements of a condition form a conjunction. A machine-readable refinement of the attribute condition of the schema."@en .
+
+# ===========================================================================
+# Relations defined by TeLex-KG
+# Hierarchy relations reuse ELI: eli:has_part / eli:is_part_of for HAS_COMPONENT,
+# eli:has_member / eli:is_member_of for HAS_TEMPORAL_VERSION,
+# eli:is_realized_by / eli:realizes for HAS_TEXT_UNIT,
+# eli:repealed_by for SUPERSEDED_BY and eli:based_on for BASED_ON.
+# ===========================================================================
+
+tlx:opens a owl:ObjectProperty ;
+    rdfs:label "OPENS (legal force)"@en ;
+    rdfs:comment "The event starts the interval of legal force of the version; its date equals eli:first_date_entry_in_force."@en ;
+    rdfs:domain tlx:ChangeEvent ; rdfs:range tlx:TemporalVersion .
+
+tlx:closes a owl:ObjectProperty ;
+    rdfs:label "CLOSES (legal force)"@en ;
+    rdfs:comment "The event ends the interval of legal force of the version; its date is the day after eli:date_no_longer_in_force. It does not by itself end the interval of applicability."@en ;
+    rdfs:domain tlx:ChangeEvent ; rdfs:range tlx:TemporalVersion .
+
+tlx:opensApplicability a owl:ObjectProperty ;
+    rdfs:label "OPENS (applicability)"@en ;
+    rdfs:comment "The event starts the interval of applicability of the version; its date equals eli:date_applicability. The same event may also open the interval of legal force."@en ;
+    rdfs:domain tlx:ChangeEvent ; rdfs:range tlx:TemporalVersion .
+
+tlx:closesApplicability a owl:ObjectProperty ;
+    rdfs:label "CLOSES (applicability)"@en ;
+    rdfs:comment "The event ends the interval of applicability of the version; its date is the day after tlx:dateNoLongerApplicable."@en ;
+    rdfs:domain tlx:ChangeEvent ; rdfs:range tlx:TemporalVersion .
+
+tlx:causedBy a owl:ObjectProperty ;
+    rdfs:label "CAUSED_BY"@en ;
+    rdfs:domain tlx:ChangeEvent ; rdfs:range tlx:LegalWork .
+
+tlx:hasCondition a owl:ObjectProperty ;
+    rdfs:label "HAS_CONDITION"@en ;
+    rdfs:domain tlx:TemporalVersion ; rdfs:range tlx:TerminationCondition .
+
+tlx:prescribedBy a owl:ObjectProperty ;
+    rdfs:label "PRESCRIBED_BY"@en ;
+    rdfs:comment "The act that establishes the condition."@en ;
+    rdfs:domain tlx:TerminationCondition ; rdfs:range tlx:LegalWork .
+
+tlx:fulfilledBy a owl:ObjectProperty ;
+    rdfs:label "FULFILLED_BY"@en ;
+    rdfs:comment "The recorded event that fulfils the condition. If the condition has requirements, this is the event that met the last of them. The event closes the intervals named by tlx:affects."@en ;
+    rdfs:domain tlx:TerminationCondition ; rdfs:range tlx:ChangeEvent .
+
+tlx:hasRequirement a owl:ObjectProperty ;
+    rdfs:comment "A requirement of the condition. The condition is fulfilled when every requirement is met."@en ;
+    rdfs:domain tlx:TerminationCondition ; rdfs:range tlx:Requirement .
+
+tlx:metBy a owl:ObjectProperty ;
+    rdfs:comment "The recorded event that meets the requirement, entered after the sources have been checked."@en ;
+    rdfs:domain tlx:Requirement ; rdfs:range tlx:ChangeEvent .
+
+tlx:adoptionUnder a owl:ObjectProperty ;
+    rdfs:comment "The provision under which the instrument awaited by the requirement is to be adopted."@en ;
+    rdfs:domain tlx:Requirement ; rdfs:range tlx:Component .
+
+tlx:affects a owl:ObjectProperty ;
+    rdfs:label "affects"@en ;
+    rdfs:comment "The temporal dimension that the condition ends: tlx:LegalForce, tlx:Applicability, or both (two values). The end of legal force does not imply the end of applicability."@en ;
+    rdfs:domain tlx:TerminationCondition ; rdfs:range skos:Concept .
+
+tlx:prescribingProvision a owl:ObjectProperty ;
+    rdfs:label "prescribing_provision"@en ;
+    rdfs:comment "The provision, within the act given by PRESCRIBED_BY, that establishes the condition."@en ;
+    rdfs:domain tlx:TerminationCondition ; rdfs:range tlx:Component .
+
+tlx:applicationRuleProvision a owl:ObjectProperty ;
+    rdfs:comment "The provision that prescribes the application rule."@en ;
+    rdfs:domain tlx:TemporalVersion ; rdfs:range tlx:Component .
+
+
+tlx:textSource a owl:ObjectProperty ;
+    rdfs:comment "Official source of the text, given as an IRI, used where the text itself is not reproduced in the graph."@en ;
+    rdfs:domain tlx:TextUnit .
+
+tlx:eventType a owl:ObjectProperty ;
+    rdfs:label "event_type"@en ;
+    rdfs:comment "The kind of event. Which interval an event opens or closes is given by the relation used (tlx:opens, tlx:closes, tlx:opensApplicability, tlx:closesApplicability), not by the event type."@en ;
+    rdfs:domain tlx:ChangeEvent ; rdfs:range skos:Concept .
+
+tlx:status a owl:ObjectProperty ;
+    rdfs:label "status"@en ;
+    rdfs:comment "Derived from FULFILLED_BY and stored redundantly to simplify queries: tlx:Fulfilled if FULFILLED_BY is present, tlx:NoRecordedFulfilment otherwise. The shapes check that the two agree."@en ;
+    rdfs:domain tlx:TerminationCondition ; rdfs:range skos:Concept .
+
+tlx:openEnd a owl:ObjectProperty ;
+    rdfs:label "open_end (legal force)"@en ;
+    rdfs:comment "The reading of an absent end of legal force (condition C3), in the current state of the graph and relative to the sources included in it. The reading on an earlier date is determined at query time from the conditions in effect on that date."@en ;
+    rdfs:domain tlx:TemporalVersion ; rdfs:range skos:Concept .
+
+tlx:openApplicabilityEnd a owl:ObjectProperty ;
+    rdfs:label "open_end (applicability)"@en ;
+    rdfs:comment "The reading of an absent end of applicability (condition C3 applied to applies_to), with the same three values as tlx:openEnd. It is recorded separately, because the end of legal force does not imply the end of applicability."@en ;
+    rdfs:domain tlx:TemporalVersion ; rdfs:range skos:Concept .
+
+# ===========================================================================
+# Attributes defined by TeLex-KG
+# Other attributes reuse ELI: eli:first_date_entry_in_force for in_force_from,
+# eli:date_no_longer_in_force for the last day in force, eli:date_applicability
+# for applies_from, eli:language, eli:number, eli:type_subdivision,
+# eli:type_document, eli:jurisdiction, eli:date_document, eli:date_publication,
+# and eli:id_local for celex. Titles of acts use dcterms:title.
+# ===========================================================================
+
+tlx:dateNoLongerApplicable a owl:DatatypeProperty ;
+    rdfs:label "applies_to (stored as last day)"@en ;
+    rdfs:comment "The last day on which the version is applicable. The exclusive bound applies_to of the paper is the day after this date. ELI has no counterpart."@en ;
+    rdfs:domain tlx:TemporalVersion ; rdfs:range xsd:date .
+
+tlx:applicationRule a owl:DatatypeProperty ;
+    rdfs:label "application_rule"@en ;
+    rdfs:comment "States in words to which cases a version applies; required where application intervals of versions of the same component overlap (condition C2). The graph does not evaluate the rule: whether it covers a particular case is not decided automatically."@en ;
+    rdfs:domain tlx:TemporalVersion ; rdfs:range rdf:langString .
+
+tlx:canonicalId a owl:DatatypeProperty ;
+    rdfs:label "canonical_id"@en ;
+    rdfs:domain tlx:Component ; rdfs:range xsd:string .
+
+tlx:text a owl:DatatypeProperty ;
+    rdfs:label "text"@en ;
+    rdfs:comment "The text of the provision, as a language-tagged string whose tag matches eli:language of the text unit."@en ;
+    rdfs:domain tlx:TextUnit ; rdfs:range rdf:langString .
+
+tlx:date a owl:DatatypeProperty ;
+    rdfs:label "date"@en ;
+    rdfs:comment "The day on which the event takes effect."@en ;
+    rdfs:domain tlx:ChangeEvent ; rdfs:range xsd:date .
+
+tlx:condition a owl:DatatypeProperty ;
+    rdfs:label "condition"@en ;
+    rdfs:domain tlx:TerminationCondition ; rdfs:range rdf:langString .
+
+tlx:effectiveFrom a owl:DatatypeProperty ;
+    rdfs:label "effective_from"@en ;
+    rdfs:comment "The day from which the condition has legal effect, as given by the source, usually the entry into force of the prescribing provision. Before this day the condition does not qualify the status of the version."@en ;
+    rdfs:domain tlx:TerminationCondition ; rdfs:range xsd:date .
+
+tlx:requirementText a owl:DatatypeProperty ;
+    rdfs:comment "What the requirement awaits, in words."@en ;
+    rdfs:domain tlx:Requirement ; rdfs:range rdf:langString .
+
+tlx:checkedOn a owl:DatatypeProperty ;
+    rdfs:label "checked_on"@en ;
+    rdfs:comment "The day on which the sources were checked for a fulfilling event. Recorded only when such a check was actually made; never inferred. With status tlx:NoRecordedFulfilment it means that no fulfilling event was found in the sources checked on that day."@en ;
+    rdfs:domain tlx:TerminationCondition ; rdfs:range xsd:date .
+
+# ===========================================================================
+# Controlled vocabularies
+# ===========================================================================
+
+tlx:OpenEndReadings a skos:ConceptScheme ; rdfs:label "Readings of an absent end (C3)"@en ;
+    skos:definition "Readings of an absent upper bound, used for both intervals. They are relative to the sources included in the graph."@en .
+tlx:NonePrescribed a skos:Concept ; skos:inScheme tlx:OpenEndReadings ;
+    skos:prefLabel "none_prescribed"@en ;
+    skos:definition "None of the sources included in the graph provides for the interval to end."@en .
+tlx:PendingCondition a skos:Concept ; skos:inScheme tlx:OpenEndReadings ;
+    skos:prefLabel "pending_condition"@en ;
+    skos:definition "A source included in the graph provides for the interval to end when a TerminationCondition affecting this interval is fulfilled; no fulfilling event is recorded, so the date is not known."@en .
+tlx:NotExtracted a skos:Concept ; skos:inScheme tlx:OpenEndReadings ;
+    skos:prefLabel "not_extracted"@en ;
+    skos:definition "The end has not been extracted, for example because it depends on sources that are not included in the graph."@en .
+
+tlx:TemporalDimensions a skos:ConceptScheme ; rdfs:label "Temporal dimensions of a version"@en .
+tlx:LegalForce a skos:Concept ; skos:inScheme tlx:TemporalDimensions ; skos:prefLabel "legal force"@en .
+tlx:Applicability a skos:Concept ; skos:inScheme tlx:TemporalDimensions ; skos:prefLabel "applicability"@en .
+
+tlx:ConditionStatuses a skos:ConceptScheme ;
+    skos:definition "Values of tlx:status, derived from FULFILLED_BY."@en .
+tlx:Fulfilled a skos:Concept ; skos:inScheme tlx:ConditionStatuses ; skos:prefLabel "fulfilled"@en ;
+    skos:definition "A fulfilling event is recorded in the graph (FULFILLED_BY)."@en .
+tlx:NoRecordedFulfilment a skos:Concept ; skos:inScheme tlx:ConditionStatuses ; skos:prefLabel "no recorded fulfilment"@en ;
+    skos:definition "No fulfilling event is recorded in the graph. This does not assert that the condition is unfulfilled in the legal order. If tlx:checkedOn is given, the sources were checked on that day and no fulfilling event was found; otherwise no check is recorded."@en .
+
+tlx:EventTypes a skos:ConceptScheme .
+tlx:Publication a skos:Concept ; skos:inScheme tlx:EventTypes ; skos:prefLabel "publication"@en .
+tlx:EntryIntoForce a skos:Concept ; skos:inScheme tlx:EventTypes ; skos:prefLabel "entry into force"@en .
+tlx:StartOfApplication a skos:Concept ; skos:inScheme tlx:EventTypes ; skos:prefLabel "start of application"@en .
+tlx:EndOfApplication a skos:Concept ; skos:inScheme tlx:EventTypes ; skos:prefLabel "end of application"@en .
+tlx:Amendment a skos:Concept ; skos:inScheme tlx:EventTypes ; skos:prefLabel "amendment"@en .
+tlx:Repeal a skos:Concept ; skos:inScheme tlx:EventTypes ; skos:prefLabel "repeal"@en .
+tlx:CourtDecision a skos:Concept ; skos:inScheme tlx:EventTypes ; skos:prefLabel "court decision"@en .
+tlx:ExternalEvent a skos:Concept ; skos:inScheme tlx:EventTypes ; skos:prefLabel "external event"@en ;
+    skos:definition "An event outside the legal sources on which provisions depend, for example the introduction of a currency."@en .
+tlx:Adoption a skos:Concept ; skos:inScheme tlx:EventTypes ; skos:prefLabel "adoption of an instrument"@en ;
+    skos:definition "The adoption of an instrument that a termination condition awaits, for example standards adopted by an agency."@en .
+
+tlx:ComponentTypes a skos:ConceptScheme ; rdfs:comment "Values of eli:type_subdivision used by TeLex-KG."@en .
+tlx:WholeText a skos:Concept ; skos:inScheme tlx:ComponentTypes ; skos:prefLabel "whole enacting text"@en .
+tlx:Part a skos:Concept ; skos:inScheme tlx:ComponentTypes ; skos:prefLabel "part"@en .
+tlx:Chapter a skos:Concept ; skos:inScheme tlx:ComponentTypes ; skos:prefLabel "chapter"@en .
+tlx:Article a skos:Concept ; skos:inScheme tlx:ComponentTypes ; skos:prefLabel "article"@en .
+tlx:Paragraph a skos:Concept ; skos:inScheme tlx:ComponentTypes ; skos:prefLabel "paragraph"@en .
+tlx:Point a skos:Concept ; skos:inScheme tlx:ComponentTypes ; skos:prefLabel "point"@en .
+tlx:Indent a skos:Concept ; skos:inScheme tlx:ComponentTypes ; skos:prefLabel "indent"@en .
+
+tlx:DocumentTypes a skos:ConceptScheme ; rdfs:comment "Values of eli:type_document used in the case study."@en .
+tlx:Act a skos:Concept ; skos:inScheme tlx:DocumentTypes ; skos:prefLabel "act (zakon)"@en .
+tlx:Regulation a skos:Concept ; skos:inScheme tlx:DocumentTypes ; skos:prefLabel "regulation (pravilnik)"@en .

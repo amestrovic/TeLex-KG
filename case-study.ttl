@@ -1,0 +1,762 @@
+# TeLex-KG case-study graph, version 1.2.0
+#
+# Part 1 (real): the two examples in Section 5 of the paper, built by hand from the
+#   official texts in the Croatian Official Gazette (Narodne novine). Acts are
+#   identified by their ELI. Only the acts and provisions below are included; later
+#   amendments are not.
+# Part 2 (SYNTHETIC): invented acts under https://w3id.org/telex-kg/id/synthetic/,
+#   showing cases the real examples do not. They are not real legal acts.
+#
+# Conventions
+# - eli:first_date_entry_in_force  first day in force
+# - eli:date_no_longer_in_force    LAST INCLUDED day in force
+# - eli:date_applicability         first day of applicability
+# - tlx:dateNoLongerApplicable     LAST INCLUDED day of applicability
+#   The exclusive upper bound of the half-open intervals in the paper is the day after
+#   the stored last day, and the event that closes an interval falls on that day.
+# - tlx:opens / tlx:closes act on legal force; tlx:opensApplicability /
+#   tlx:closesApplicability act on applicability.
+# - An absent end is explained per dimension by tlx:openEnd (legal force) and
+#   tlx:openApplicabilityEnd (applicability). Readings refer to the included sources.
+# - A start of applicability equal to the start of legal force means that the act sets
+#   no separate date of application. An end of applicability is never copied from the
+#   end of legal force; each is justified separately.
+# - Titles of acts use dcterms:title, because the domain of eli:title is eli:Expression.
+# - Text units with tlx:text give the complete text of the provision; others point to
+#   the official source with tlx:textSource.
+# - IRIs under https://w3id.org/telex-kg/ are identifiers; they do not resolve.
+
+@base    <https://w3id.org/telex-kg/id/> .
+@prefix tlx:     <https://w3id.org/telex-kg/ontology#> .
+@prefix eli:     <http://data.europa.eu/eli/ontology#> .
+@prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix xsd:     <http://www.w3.org/2001/XMLSchema#> .
+@prefix lang:    <http://publications.europa.eu/resource/authority/language/> .
+@prefix country: <http://publications.europa.eu/resource/authority/country/> .
+
+# ###########################################################################
+# PART 1: REAL EXAMPLES
+# ###########################################################################
+
+# ===========================================================================
+# Legal works
+# ===========================================================================
+
+<https://narodne-novine.nn.hr/eli/sluzbeni/2022/119/1834>
+    a tlx:LegalWork ;
+    dcterms:title "Zakon o visokom obrazovanju i znanstvenoj djelatnosti"@hr ;
+    rdfs:label "Act on Higher Education and Scientific Activity"@en ;
+    eli:type_document tlx:Act ;
+    eli:jurisdiction country:HRV ;
+    eli:id_local "NN 119/2022" ;
+    eli:number "1834" ;
+    eli:date_document "2022-10-07"^^xsd:date ;
+    eli:date_publication "2022-10-14"^^xsd:date .
+
+<https://narodne-novine.nn.hr/eli/sluzbeni/2003/123/1742>
+    a tlx:LegalWork ;
+    dcterms:title "Zakon o znanstvenoj djelatnosti i visokom obrazovanju"@hr ;
+    rdfs:label "Act on Scientific Activity and Higher Education (former act)"@en ;
+    eli:type_document tlx:Act ;
+    eli:jurisdiction country:HRV ;
+    eli:id_local "NN 123/2003" ;
+    eli:number "1742" ;
+    eli:date_document "2003-07-17"^^xsd:date ;
+    eli:date_publication "2003-07-31"^^xsd:date ;
+    eli:repealed_by <https://narodne-novine.nn.hr/eli/sluzbeni/2022/119/1834> .      # SUPERSEDED_BY
+
+<https://narodne-novine.nn.hr/eli/sluzbeni/2022/151/2330>
+    a tlx:LegalWork ;
+    dcterms:title "Zakon o osiguravanju kvalitete u visokom obrazovanju i znanosti"@hr ;
+    rdfs:label "Act on Quality Assurance in Higher Education and Science"@en ;
+    eli:type_document tlx:Act ;
+    eli:jurisdiction country:HRV ;
+    eli:id_local "NN 151/2022" ;
+    eli:number "2330" ;
+    eli:date_document "2022-12-16"^^xsd:date ;
+    eli:date_publication "2022-12-22"^^xsd:date .
+
+<https://narodne-novine.nn.hr/eli/sluzbeni/2009/45/1031>
+    a tlx:LegalWork ;
+    dcterms:title "Zakon o osiguravanju kvalitete u znanosti i visokom obrazovanju"@hr ;
+    rdfs:label "Act on Quality Assurance in Science and Higher Education (former act)"@en ;
+    eli:type_document tlx:Act ;
+    eli:jurisdiction country:HRV ;
+    eli:id_local "NN 45/2009" ;
+    eli:number "1031" ;
+    eli:date_document "2009-04-03"^^xsd:date ;
+    eli:repealed_by <https://narodne-novine.nn.hr/eli/sluzbeni/2022/151/2330> .      # SUPERSEDED_BY
+
+<https://narodne-novine.nn.hr/eli/sluzbeni/2010/83/2375>
+    a tlx:LegalWork ;
+    dcterms:title "Pravilnik o uvjetima za izdavanje dopusnice za obavljanje znanstvene djelatnosti, uvjetima za reakreditaciju znanstvenih organizacija i sadržaju dopusnice"@hr ;
+    rdfs:label "Regulation on the conditions for issuing a licence for scientific activity, on the conditions for the reaccreditation of scientific organisations and on the content of the licence"@en ;
+    eli:type_document tlx:Regulation ;
+    eli:jurisdiction country:HRV ;
+    eli:id_local "NN 83/2010" ;
+    eli:number "2375" ;
+    eli:date_publication "2010-07-05"^^xsd:date ;
+    eli:based_on <https://narodne-novine.nn.hr/eli/sluzbeni/2009/45/1031> ;         # BASED_ON
+    rdfs:comment "Adopted under Article 26(2) of OG 45/2009."@en .
+
+# ===========================================================================
+# Example 1 (Sect. 5.1): Act on Higher Education and Scientific Activity
+# ===========================================================================
+
+<sluzbeni/2022/119/1834/art_107>
+    a tlx:Component ;
+    eli:is_part_of <https://narodne-novine.nn.hr/eli/sluzbeni/2022/119/1834> ;
+    eli:type_subdivision tlx:Article ;
+    eli:number "107" ;
+    tlx:canonicalId "art_107" ;
+    rdfs:label "Article 107 (fines in kuna)"@en .
+
+<sluzbeni/2022/119/1834/art_108>
+    a tlx:Component ;
+    eli:is_part_of <https://narodne-novine.nn.hr/eli/sluzbeni/2022/119/1834> ;
+    eli:type_subdivision tlx:Article ;
+    eli:number "108" ;
+    tlx:canonicalId "art_108" ;
+    rdfs:label "Article 108 (fines in euro)"@en .
+
+<sluzbeni/2022/119/1834/art_121>
+    a tlx:Component ;
+    eli:is_part_of <https://narodne-novine.nn.hr/eli/sluzbeni/2022/119/1834> ;
+    eli:type_subdivision tlx:Article ;
+    eli:number "121" ;
+    tlx:canonicalId "art_121" .
+
+<sluzbeni/2022/119/1834/art_121/par_3>
+    a tlx:Component ;
+    eli:is_part_of <sluzbeni/2022/119/1834/art_121> ;
+    eli:type_subdivision tlx:Paragraph ;
+    eli:number "3" ;
+    tlx:canonicalId "art_121/par_3" .
+
+<sluzbeni/2022/119/1834/art_122>
+    a tlx:Component ;
+    eli:is_part_of <https://narodne-novine.nn.hr/eli/sluzbeni/2022/119/1834> ;
+    eli:type_subdivision tlx:Article ;
+    eli:number "122" ;
+    tlx:canonicalId "art_122" ;
+    rdfs:label "Article 122 (entry into force)"@en .
+
+# --- versions -------------------------------------------------------------
+
+<sluzbeni/2022/119/1834/art_107/v/2022-10-22>
+    a tlx:TemporalVersion ;
+    eli:is_member_of <sluzbeni/2022/119/1834/art_107> ;
+    eli:first_date_entry_in_force "2022-10-22"^^xsd:date ;
+    eli:date_no_longer_in_force "2022-12-31"^^xsd:date ;
+    eli:date_applicability "2022-10-22"^^xsd:date ;
+    tlx:openApplicabilityEnd tlx:NotExtracted ;
+    eli:is_realized_by <sluzbeni/2022/119/1834/art_107/v/2022-10-22/hrv> ;
+    rdfs:comment "In force up to and including 31 December 2022 (Art. 121(3)). Article 121(3) states when Article 107 ceases to be in force, but the included sources do not state until when it is applied to cases that arose while it was in force. That depends on rules outside the graph, so the end of applicability is recorded as not extracted rather than copied from the end of legal force."@en .
+
+<sluzbeni/2022/119/1834/art_107/v/2022-10-22/hrv>
+    a tlx:TextUnit ;
+    eli:language lang:HRV ;
+    tlx:textSource <https://narodne-novine.nn.hr/eli/sluzbeni/2022/119/1834> ;
+    rdfs:comment "The text of Article 107 is not reproduced here; see the official source."@en .
+
+<sluzbeni/2022/119/1834/art_108/v/2023-01-01>
+    a tlx:TemporalVersion ;
+    eli:is_member_of <sluzbeni/2022/119/1834/art_108> ;
+    eli:first_date_entry_in_force "2023-01-01"^^xsd:date ;
+    tlx:openEnd tlx:NonePrescribed ;
+    eli:date_applicability "2023-01-01"^^xsd:date ;
+    tlx:openApplicabilityEnd tlx:NonePrescribed ;
+    eli:is_realized_by <sluzbeni/2022/119/1834/art_108/v/2023-01-01/hrv> .
+
+<sluzbeni/2022/119/1834/art_108/v/2023-01-01/hrv>
+    a tlx:TextUnit ;
+    eli:language lang:HRV ;
+    tlx:textSource <https://narodne-novine.nn.hr/eli/sluzbeni/2022/119/1834> ;
+    rdfs:comment "The text of Article 108 is not reproduced here; see the official source."@en .
+
+<sluzbeni/2022/119/1834/art_121/par_3/v/2022-10-22>
+    a tlx:TemporalVersion ;
+    eli:is_member_of <sluzbeni/2022/119/1834/art_121/par_3> ;
+    eli:first_date_entry_in_force "2022-10-22"^^xsd:date ;
+    tlx:openEnd tlx:NonePrescribed ;
+    eli:date_applicability "2022-10-22"^^xsd:date ;
+    tlx:openApplicabilityEnd tlx:NonePrescribed ;
+    eli:is_realized_by <sluzbeni/2022/119/1834/art_121/par_3/v/2022-10-22/hrv> .
+
+<sluzbeni/2022/119/1834/art_121/par_3/v/2022-10-22/hrv>
+    a tlx:TextUnit ;
+    eli:language lang:HRV ;
+    tlx:text "Odredbe članka 107. ovoga Zakona prestaju važiti na dan uvođenja eura kao službene valute u Republici Hrvatskoj."@hr ;
+    dcterms:source <https://narodne-novine.nn.hr/eli/sluzbeni/2022/119/1834> .
+
+<sluzbeni/2022/119/1834/art_122/v/2022-10-22>
+    a tlx:TemporalVersion ;
+    eli:is_member_of <sluzbeni/2022/119/1834/art_122> ;
+    eli:first_date_entry_in_force "2022-10-22"^^xsd:date ;
+    tlx:openEnd tlx:NonePrescribed ;
+    eli:date_applicability "2022-10-22"^^xsd:date ;
+    tlx:openApplicabilityEnd tlx:NonePrescribed ;
+    eli:is_realized_by <sluzbeni/2022/119/1834/art_122/v/2022-10-22/hrv> .
+
+<sluzbeni/2022/119/1834/art_122/v/2022-10-22/hrv>
+    a tlx:TextUnit ;
+    eli:language lang:HRV ;
+    tlx:textSource <https://narodne-novine.nn.hr/eli/sluzbeni/2022/119/1834> ;
+    rdfs:comment "The text of Article 122 is not reproduced here; see the official source."@en .
+
+# --- events ---------------------------------------------------------------
+
+<event/2022-10-14/publication/sluzbeni/2022/119/1834>
+    a tlx:ChangeEvent ;
+    tlx:eventType tlx:Publication ;
+    tlx:date "2022-10-14"^^xsd:date ;
+    tlx:causedBy <https://narodne-novine.nn.hr/eli/sluzbeni/2022/119/1834> .
+
+<event/2022-10-22/entry-into-force/sluzbeni/2022/119/1834>
+    a tlx:ChangeEvent ;
+    tlx:eventType tlx:EntryIntoForce ;
+    tlx:date "2022-10-22"^^xsd:date ;
+    tlx:causedBy <https://narodne-novine.nn.hr/eli/sluzbeni/2022/119/1834> ;
+    tlx:opens <sluzbeni/2022/119/1834/art_107/v/2022-10-22> ,
+              <sluzbeni/2022/119/1834/art_121/par_3/v/2022-10-22> ,
+              <sluzbeni/2022/119/1834/art_122/v/2022-10-22> ;
+    tlx:opensApplicability <sluzbeni/2022/119/1834/art_107/v/2022-10-22> ,
+              <sluzbeni/2022/119/1834/art_121/par_3/v/2022-10-22> ,
+              <sluzbeni/2022/119/1834/art_122/v/2022-10-22> ;
+    rdfs:comment "Eighth day after publication (Art. 122). The act sets no separate date of application for these provisions."@en .
+
+<event/2022-10-22/repeal/sluzbeni/2003/123/1742>
+    a tlx:ChangeEvent ;
+    tlx:eventType tlx:Repeal ;
+    tlx:date "2022-10-22"^^xsd:date ;
+    tlx:causedBy <https://narodne-novine.nn.hr/eli/sluzbeni/2022/119/1834> ;
+    rdfs:comment "Art. 121(1) of OG 119/2022: the former act ceases to be in force on the entry into force of the new act. Versions of the former act are not modelled."@en .
+
+<event/2023-01-01/euro-introduction>
+    a tlx:ChangeEvent ;
+    tlx:eventType tlx:ExternalEvent ;
+    tlx:date "2023-01-01"^^xsd:date ;
+    tlx:causedBy <https://narodne-novine.nn.hr/eli/sluzbeni/2022/119/1834> ;
+    tlx:opens <sluzbeni/2022/119/1834/art_108/v/2023-01-01> ;
+    tlx:opensApplicability <sluzbeni/2022/119/1834/art_108/v/2023-01-01> ;
+    tlx:closes <sluzbeni/2022/119/1834/art_107/v/2022-10-22> ;
+    rdfs:label "Introduction of the euro as the official currency of Croatia"@en ;
+    rdfs:comment "One external event with effects prescribed in two provisions of OG 119/2022, which is therefore given as CAUSED_BY: it opens Article 108 (Art. 122) and ends the legal force of Article 107 (Art. 121(3)). It does not close the applicability of Article 107."@en .
+
+# ===========================================================================
+# Example 2 (Sect. 5.2): a regulation kept in force by an unresolved condition
+# ===========================================================================
+
+<sluzbeni/2022/151/2330/art_8>
+    a tlx:Component ;
+    eli:is_part_of <https://narodne-novine.nn.hr/eli/sluzbeni/2022/151/2330> ;
+    eli:type_subdivision tlx:Article ;
+    eli:number "8" ;
+    tlx:canonicalId "art_8" .
+
+<sluzbeni/2022/151/2330/art_8/par_3>
+    a tlx:Component ;
+    eli:is_part_of <sluzbeni/2022/151/2330/art_8> ;
+    eli:type_subdivision tlx:Paragraph ;
+    eli:number "3" ;
+    tlx:canonicalId "art_8/par_3" ;
+    rdfs:label "Article 8(3) (adoption of the quality standards)"@en .
+
+<sluzbeni/2022/151/2330/art_21>
+    a tlx:Component ;
+    eli:is_part_of <https://narodne-novine.nn.hr/eli/sluzbeni/2022/151/2330> ;
+    eli:type_subdivision tlx:Article ;
+    eli:number "21" ;
+    tlx:canonicalId "art_21" .
+
+<sluzbeni/2022/151/2330/art_21/par_3>
+    a tlx:Component ;
+    eli:is_part_of <sluzbeni/2022/151/2330/art_21> ;
+    eli:type_subdivision tlx:Paragraph ;
+    eli:number "3" ;
+    tlx:canonicalId "art_21/par_3" ;
+    rdfs:label "Article 21(3) (decision on the form and content of the licence)"@en .
+
+<sluzbeni/2022/151/2330/art_50>
+    a tlx:Component ;
+    eli:is_part_of <https://narodne-novine.nn.hr/eli/sluzbeni/2022/151/2330> ;
+    eli:type_subdivision tlx:Article ;
+    eli:number "50" ;
+    tlx:canonicalId "art_50" ;
+    rdfs:label "Article 50 (transitional provision on implementing regulations)"@en .
+
+<sluzbeni/2022/151/2330/art_51>
+    a tlx:Component ;
+    eli:is_part_of <https://narodne-novine.nn.hr/eli/sluzbeni/2022/151/2330> ;
+    eli:type_subdivision tlx:Article ;
+    eli:number "51" ;
+    tlx:canonicalId "art_51" .
+
+<sluzbeni/2022/151/2330/art_52>
+    a tlx:Component ;
+    eli:is_part_of <https://narodne-novine.nn.hr/eli/sluzbeni/2022/151/2330> ;
+    eli:type_subdivision tlx:Article ;
+    eli:number "52" ;
+    tlx:canonicalId "art_52" .
+
+<sluzbeni/2022/151/2330/art_8/par_3/v/2022-12-30>
+    a tlx:TemporalVersion ;
+    eli:is_member_of <sluzbeni/2022/151/2330/art_8/par_3> ;
+    eli:first_date_entry_in_force "2022-12-30"^^xsd:date ;
+    tlx:openEnd tlx:NonePrescribed ;
+    eli:date_applicability "2022-12-30"^^xsd:date ;
+    tlx:openApplicabilityEnd tlx:NonePrescribed ;
+    eli:is_realized_by <sluzbeni/2022/151/2330/art_8/par_3/v/2022-12-30/hrv> .
+
+<sluzbeni/2022/151/2330/art_8/par_3/v/2022-12-30/hrv>
+    a tlx:TextUnit ;
+    eli:language lang:HRV ;
+    tlx:textSource <https://narodne-novine.nn.hr/eli/sluzbeni/2022/151/2330> ;
+    rdfs:comment "The text of Article 8(3) is not reproduced here; see the official source."@en .
+
+<sluzbeni/2022/151/2330/art_21/par_3/v/2022-12-30>
+    a tlx:TemporalVersion ;
+    eli:is_member_of <sluzbeni/2022/151/2330/art_21/par_3> ;
+    eli:first_date_entry_in_force "2022-12-30"^^xsd:date ;
+    tlx:openEnd tlx:NonePrescribed ;
+    eli:date_applicability "2022-12-30"^^xsd:date ;
+    tlx:openApplicabilityEnd tlx:NonePrescribed ;
+    eli:is_realized_by <sluzbeni/2022/151/2330/art_21/par_3/v/2022-12-30/hrv> .
+
+<sluzbeni/2022/151/2330/art_21/par_3/v/2022-12-30/hrv>
+    a tlx:TextUnit ;
+    eli:language lang:HRV ;
+    tlx:textSource <https://narodne-novine.nn.hr/eli/sluzbeni/2022/151/2330> ;
+    rdfs:comment "The text of Article 21(3) is not reproduced here; see the official source."@en .
+
+<sluzbeni/2022/151/2330/art_50/v/2022-12-30>
+    a tlx:TemporalVersion ;
+    eli:is_member_of <sluzbeni/2022/151/2330/art_50> ;
+    eli:first_date_entry_in_force "2022-12-30"^^xsd:date ;
+    tlx:openEnd tlx:NonePrescribed ;
+    eli:date_applicability "2022-12-30"^^xsd:date ;
+    tlx:openApplicabilityEnd tlx:NonePrescribed ;
+    eli:is_realized_by <sluzbeni/2022/151/2330/art_50/v/2022-12-30/hrv> .
+
+<sluzbeni/2022/151/2330/art_50/v/2022-12-30/hrv>
+    a tlx:TextUnit ;
+    eli:language lang:HRV ;
+    tlx:text """Pravilnik o sadržaju dopusnice te uvjetima za izdavanje dopusnice za obavljanje djelatnosti visokog obrazovanja, izvođenje studijskog programa i reakreditaciju visokih učilišta (»Narodne novine«, br. 24/10.) i Pravilnik o uvjetima za izdavanje dopusnice za obavljanje znanstvene djelatnosti, uvjetima za reakreditaciju znanstvenih organizacija i sadržaju dopusnice (»Narodne novine«, br. 83/10.), doneseni na temelju Zakona o osiguravanju kvalitete u znanosti i visokom obrazovanju (»Narodne novine«, br. 45/09.), ostaju na snazi do donošenja Standarda kvalitete iz članka 8. stavka 3. ovoga Zakona te odluke o obliku i detaljnijem sadržaju dopusnice iz članka 21. stavka 3. ovoga Zakona."""@hr ;
+    dcterms:source <https://narodne-novine.nn.hr/eli/sluzbeni/2022/151/2330> .
+
+<sluzbeni/2022/151/2330/art_51/v/2022-12-30>
+    a tlx:TemporalVersion ;
+    eli:is_member_of <sluzbeni/2022/151/2330/art_51> ;
+    eli:first_date_entry_in_force "2022-12-30"^^xsd:date ;
+    tlx:openEnd tlx:NonePrescribed ;
+    eli:date_applicability "2022-12-30"^^xsd:date ;
+    tlx:openApplicabilityEnd tlx:NonePrescribed ;
+    eli:is_realized_by <sluzbeni/2022/151/2330/art_51/v/2022-12-30/hrv> .
+
+<sluzbeni/2022/151/2330/art_51/v/2022-12-30/hrv>
+    a tlx:TextUnit ;
+    eli:language lang:HRV ;
+    tlx:text "Danom stupanja na snagu ovoga Zakona prestaje važiti Zakon o osiguravanju kvalitete u znanosti i visokom obrazovanju (»Narodne novine«, br. 45/09.)."@hr ;
+    dcterms:source <https://narodne-novine.nn.hr/eli/sluzbeni/2022/151/2330> .
+
+<sluzbeni/2022/151/2330/art_52/v/2022-12-30>
+    a tlx:TemporalVersion ;
+    eli:is_member_of <sluzbeni/2022/151/2330/art_52> ;
+    eli:first_date_entry_in_force "2022-12-30"^^xsd:date ;
+    tlx:openEnd tlx:NonePrescribed ;
+    eli:date_applicability "2022-12-30"^^xsd:date ;
+    tlx:openApplicabilityEnd tlx:NonePrescribed ;
+    eli:is_realized_by <sluzbeni/2022/151/2330/art_52/v/2022-12-30/hrv> .
+
+<sluzbeni/2022/151/2330/art_52/v/2022-12-30/hrv>
+    a tlx:TextUnit ;
+    eli:language lang:HRV ;
+    tlx:text "Ovaj Zakon stupa na snagu osmoga dana od dana objave u »Narodnim novinama«."@hr ;
+    dcterms:source <https://narodne-novine.nn.hr/eli/sluzbeni/2022/151/2330> .
+
+# --- the regulation (its enacting text as a whole) ------------------------
+
+<sluzbeni/2010/83/2375/whole>
+    a tlx:Component ;
+    eli:is_part_of <https://narodne-novine.nn.hr/eli/sluzbeni/2010/83/2375> ;
+    eli:type_subdivision tlx:WholeText ;
+    tlx:canonicalId "whole" ;
+    rdfs:comment "The termination condition applies to the regulation as a whole, so its enacting text is represented as one component."@en .
+
+<sluzbeni/2010/83/2375/whole/v/2010-07-13>
+    a tlx:TemporalVersion ;
+    eli:is_member_of <sluzbeni/2010/83/2375/whole> ;
+    eli:first_date_entry_in_force "2010-07-13"^^xsd:date ;
+    tlx:openEnd tlx:PendingCondition ;
+    tlx:hasCondition <condition/sluzbeni/2022/151/2330/art_50/sluzbeni/2010/83/2375> ;
+    eli:date_applicability "2010-07-13"^^xsd:date ;
+    tlx:openApplicabilityEnd tlx:NotExtracted ;
+    eli:is_realized_by <sluzbeni/2010/83/2375/whole/v/2010-07-13/hrv> ;
+    rdfs:comment "Article 50 of OG 151/2022 keeps the regulation in force (ostaju na snazi). The included sources do not state whether or until when the regulation is applied after it ceases to be in force, so the end of applicability is recorded as not extracted."@en .
+
+<sluzbeni/2010/83/2375/whole/v/2010-07-13/hrv>
+    a tlx:TextUnit ;
+    eli:language lang:HRV ;
+    tlx:textSource <https://narodne-novine.nn.hr/eli/sluzbeni/2010/83/2375> ;
+    rdfs:comment "The text of the regulation is not reproduced here; see the official source."@en .
+
+<condition/sluzbeni/2022/151/2330/art_50/sluzbeni/2010/83/2375>
+    a tlx:TerminationCondition ;
+    tlx:condition "The regulation remains in force until the quality standards under Article 8(3) and the decision on the form and detailed content of the licence under Article 21(3) of OG 151/2022 are adopted."@en ;
+    tlx:prescribedBy <https://narodne-novine.nn.hr/eli/sluzbeni/2022/151/2330> ;
+    tlx:prescribingProvision <sluzbeni/2022/151/2330/art_50> ;
+    tlx:affects tlx:LegalForce ;
+    tlx:effectiveFrom "2022-12-30"^^xsd:date ;
+    tlx:hasRequirement <condition/sluzbeni/2022/151/2330/art_50/sluzbeni/2010/83/2375/req/1> ,
+                       <condition/sluzbeni/2022/151/2330/art_50/sluzbeni/2010/83/2375/req/2> ;
+    tlx:status tlx:NoRecordedFulfilment ;
+    dcterms:source <https://narodne-novine.nn.hr/eli/sluzbeni/2022/151/2330> ;
+    rdfs:comment "Source: Art. 50 of OG 151/2022, which concerns legal force (ostaju na snazi). The condition takes effect with the entry into force of OG 151/2022 on 30 December 2022 (Art. 52: eighth day after publication on 22 December 2022). Both requirements must be met. No event meeting either requirement and no check of the sources is recorded, so the status means that no fulfilment is recorded, not that the condition is known to be unfulfilled. Fulfilment is not detected automatically; it must be entered after the sources have been checked."@en .
+
+<condition/sluzbeni/2022/151/2330/art_50/sluzbeni/2010/83/2375/req/1>
+    a tlx:Requirement ;
+    tlx:requirementText "Adoption of the quality standards under Article 8(3) of OG 151/2022."@en ;
+    tlx:adoptionUnder <sluzbeni/2022/151/2330/art_8/par_3> .
+
+<condition/sluzbeni/2022/151/2330/art_50/sluzbeni/2010/83/2375/req/2>
+    a tlx:Requirement ;
+    tlx:requirementText "Adoption of the decision on the form and detailed content of the licence under Article 21(3) of OG 151/2022."@en ;
+    tlx:adoptionUnder <sluzbeni/2022/151/2330/art_21/par_3> .
+
+# --- events ---------------------------------------------------------------
+
+<event/2010-07-05/publication/sluzbeni/2010/83/2375>
+    a tlx:ChangeEvent ;
+    tlx:eventType tlx:Publication ;
+    tlx:date "2010-07-05"^^xsd:date ;
+    tlx:causedBy <https://narodne-novine.nn.hr/eli/sluzbeni/2010/83/2375> .
+
+<event/2010-07-13/entry-into-force/sluzbeni/2010/83/2375>
+    a tlx:ChangeEvent ;
+    tlx:eventType tlx:EntryIntoForce ;
+    tlx:date "2010-07-13"^^xsd:date ;
+    tlx:causedBy <https://narodne-novine.nn.hr/eli/sluzbeni/2010/83/2375> ;
+    tlx:opens <sluzbeni/2010/83/2375/whole/v/2010-07-13> ;
+    tlx:opensApplicability <sluzbeni/2010/83/2375/whole/v/2010-07-13> .
+
+<event/2022-12-22/publication/sluzbeni/2022/151/2330>
+    a tlx:ChangeEvent ;
+    tlx:eventType tlx:Publication ;
+    tlx:date "2022-12-22"^^xsd:date ;
+    tlx:causedBy <https://narodne-novine.nn.hr/eli/sluzbeni/2022/151/2330> .
+
+<event/2022-12-30/entry-into-force/sluzbeni/2022/151/2330>
+    a tlx:ChangeEvent ;
+    tlx:eventType tlx:EntryIntoForce ;
+    tlx:date "2022-12-30"^^xsd:date ;
+    tlx:causedBy <https://narodne-novine.nn.hr/eli/sluzbeni/2022/151/2330> ;
+    tlx:opens <sluzbeni/2022/151/2330/art_8/par_3/v/2022-12-30> ,
+              <sluzbeni/2022/151/2330/art_21/par_3/v/2022-12-30> ,
+              <sluzbeni/2022/151/2330/art_50/v/2022-12-30> ,
+              <sluzbeni/2022/151/2330/art_51/v/2022-12-30> ,
+              <sluzbeni/2022/151/2330/art_52/v/2022-12-30> ;
+    tlx:opensApplicability <sluzbeni/2022/151/2330/art_8/par_3/v/2022-12-30> ,
+              <sluzbeni/2022/151/2330/art_21/par_3/v/2022-12-30> ,
+              <sluzbeni/2022/151/2330/art_50/v/2022-12-30> ,
+              <sluzbeni/2022/151/2330/art_51/v/2022-12-30> ,
+              <sluzbeni/2022/151/2330/art_52/v/2022-12-30> ;
+    rdfs:comment "Eighth day after publication (Art. 52). The act sets no separate date of application for these provisions."@en .
+
+<event/2022-12-30/repeal/sluzbeni/2009/45/1031>
+    a tlx:ChangeEvent ;
+    tlx:eventType tlx:Repeal ;
+    tlx:date "2022-12-30"^^xsd:date ;
+    tlx:causedBy <https://narodne-novine.nn.hr/eli/sluzbeni/2022/151/2330> ;
+    rdfs:comment "Art. 51 of OG 151/2022: the former act ceases to be in force on the entry into force of the new act. Versions of the former act are not modelled."@en .
+
+# ###########################################################################
+# PART 2: SYNTHETIC EXAMPLES (NOT REAL LEGAL ACTS)
+# All acts, provisions, dates and texts below are invented. Their IRIs are under
+# https://w3id.org/telex-kg/id/synthetic/ and do not overlap with Part 1.
+#
+# A. Two consecutive versions of one article: legal force does not overlap, but the
+#    first version still applies to proceedings started before the second entered
+#    into force, so applicability overlaps under two rules. One article has ends
+#    that have not been extracted.
+# B. A termination condition with two requirements that affects legal force and
+#    applicability. It is shown in its final, fulfilled state only; the earlier
+#    unresolved state follows from the event dates at query time, so the graph
+#    contains no contradictory states.
+# ###########################################################################
+
+# --- A. Transitional application ------------------------------------------
+
+<synthetic/act-a> a tlx:LegalWork ;
+    dcterms:title "Synthetic Act A"@en ;
+    eli:type_document tlx:Act ;
+    rdfs:comment "Synthetic example; not a real legal act."@en .
+
+<synthetic/act-b> a tlx:LegalWork ;
+    dcterms:title "Synthetic Act B, amending Synthetic Act A"@en ;
+    eli:type_document tlx:Act ;
+    rdfs:comment "Synthetic example; not a real legal act."@en .
+
+<synthetic/act-a/art_5> a tlx:Component ;
+    eli:is_part_of <synthetic/act-a> ;
+    eli:type_subdivision tlx:Article ;
+    eli:number "5" ;
+    tlx:canonicalId "art_5" .
+
+<synthetic/act-a/art_6> a tlx:Component ;
+    eli:is_part_of <synthetic/act-a> ;
+    eli:type_subdivision tlx:Article ;
+    eli:number "6" ;
+    tlx:canonicalId "art_6" .
+
+<synthetic/act-b/art_10> a tlx:Component ;
+    eli:is_part_of <synthetic/act-b> ;
+    eli:type_subdivision tlx:Article ;
+    eli:number "10" ;
+    tlx:canonicalId "art_10" ;
+    rdfs:label "Article 10 (transitional provision)"@en .
+
+<synthetic/act-a/art_5/v/2020-01-01> a tlx:TemporalVersion ;
+    eli:is_member_of <synthetic/act-a/art_5> ;
+    eli:first_date_entry_in_force "2020-01-01"^^xsd:date ;
+    eli:date_no_longer_in_force "2023-12-31"^^xsd:date ;
+    eli:date_applicability "2020-01-01"^^xsd:date ;
+    tlx:openApplicabilityEnd tlx:NonePrescribed ;
+    tlx:applicationRule "Applies to proceedings started before 1 January 2024."@en ;
+    tlx:applicationRuleProvision <synthetic/act-b/art_10> ;
+    eli:is_realized_by <synthetic/act-a/art_5/v/2020-01-01/eng> ;
+    rdfs:comment "In force up to and including 31 December 2023. Its applicability continues under Art. 10 of Act B, which sets no end, for proceedings started before 1 January 2024."@en .
+
+<synthetic/act-a/art_5/v/2020-01-01/eng> a tlx:TextUnit ;
+    eli:language lang:ENG ;
+    tlx:text "An application shall be decided within 60 days."@en .
+
+<synthetic/act-a/art_5/v/2024-01-01> a tlx:TemporalVersion ;
+    eli:is_member_of <synthetic/act-a/art_5> ;
+    eli:first_date_entry_in_force "2024-01-01"^^xsd:date ;
+    tlx:openEnd tlx:NonePrescribed ;
+    eli:date_applicability "2024-01-01"^^xsd:date ;
+    tlx:openApplicabilityEnd tlx:NonePrescribed ;
+    tlx:applicationRule "Applies to proceedings started on or after 1 January 2024."@en ;
+    tlx:applicationRuleProvision <synthetic/act-b/art_10> ;
+    eli:is_realized_by <synthetic/act-a/art_5/v/2024-01-01/eng> .
+
+<synthetic/act-a/art_5/v/2024-01-01/eng> a tlx:TextUnit ;
+    eli:language lang:ENG ;
+    tlx:text "An application shall be decided within 30 days."@en .
+
+<synthetic/act-a/art_6/v/2020-01-01> a tlx:TemporalVersion ;
+    eli:is_member_of <synthetic/act-a/art_6> ;
+    eli:first_date_entry_in_force "2020-01-01"^^xsd:date ;
+    tlx:openEnd tlx:NotExtracted ;
+    eli:date_applicability "2020-01-01"^^xsd:date ;
+    tlx:openApplicabilityEnd tlx:NotExtracted ;
+    eli:is_realized_by <synthetic/act-a/art_6/v/2020-01-01/eng> .
+
+<synthetic/act-a/art_6/v/2020-01-01/eng> a tlx:TextUnit ;
+    eli:language lang:ENG ;
+    tlx:text "A synthetic provision whose end has not been extracted."@en .
+
+<synthetic/act-b/art_10/v/2024-01-01> a tlx:TemporalVersion ;
+    eli:is_member_of <synthetic/act-b/art_10> ;
+    eli:first_date_entry_in_force "2024-01-01"^^xsd:date ;
+    tlx:openEnd tlx:NonePrescribed ;
+    eli:date_applicability "2024-01-01"^^xsd:date ;
+    tlx:openApplicabilityEnd tlx:NonePrescribed ;
+    eli:is_realized_by <synthetic/act-b/art_10/v/2024-01-01/eng> .
+
+<synthetic/act-b/art_10/v/2024-01-01/eng> a tlx:TextUnit ;
+    eli:language lang:ENG ;
+    tlx:text "Proceedings started before the entry into force of this Act shall be concluded under the provisions in force until then."@en .
+
+<synthetic/event/2020-01-01/entry-into-force/act-a> a tlx:ChangeEvent ;
+    tlx:eventType tlx:EntryIntoForce ;
+    tlx:date "2020-01-01"^^xsd:date ;
+    tlx:causedBy <synthetic/act-a> ;
+    tlx:opens <synthetic/act-a/art_5/v/2020-01-01> , <synthetic/act-a/art_6/v/2020-01-01> ;
+    tlx:opensApplicability <synthetic/act-a/art_5/v/2020-01-01> , <synthetic/act-a/art_6/v/2020-01-01> .
+
+<synthetic/event/2024-01-01/entry-into-force/act-b> a tlx:ChangeEvent ;
+    tlx:eventType tlx:EntryIntoForce ;
+    tlx:date "2024-01-01"^^xsd:date ;
+    tlx:causedBy <synthetic/act-b> ;
+    tlx:opens <synthetic/act-b/art_10/v/2024-01-01> ;
+    tlx:opensApplicability <synthetic/act-b/art_10/v/2024-01-01> .
+
+<synthetic/event/2024-01-01/amendment/act-a/art_5> a tlx:ChangeEvent ;
+    tlx:eventType tlx:Amendment ;
+    tlx:date "2024-01-01"^^xsd:date ;
+    tlx:causedBy <synthetic/act-b> ;
+    tlx:closes <synthetic/act-a/art_5/v/2020-01-01> ;
+    tlx:opens <synthetic/act-a/art_5/v/2024-01-01> ;
+    tlx:opensApplicability <synthetic/act-a/art_5/v/2024-01-01> ;
+    rdfs:comment "Ends the legal force of the first version and opens the second. It does not close the applicability of the first version."@en .
+
+# --- B. A condition with two requirements that is fulfilled ---------------
+
+<synthetic/act-c> a tlx:LegalWork ;
+    dcterms:title "Synthetic Act C"@en ;
+    eli:type_document tlx:Act ;
+    eli:repealed_by <synthetic/act-d> ;
+    rdfs:comment "Synthetic example; not a real legal act."@en .
+
+<synthetic/act-d> a tlx:LegalWork ;
+    dcterms:title "Synthetic Act D, replacing Synthetic Act C"@en ;
+    eli:type_document tlx:Act ;
+    rdfs:comment "Synthetic example; not a real legal act."@en .
+
+<synthetic/regulation-r> a tlx:LegalWork ;
+    dcterms:title "Synthetic Regulation R, adopted under Synthetic Act C"@en ;
+    eli:type_document tlx:Regulation ;
+    eli:based_on <synthetic/act-c> ;
+    rdfs:comment "Synthetic example; not a real legal act."@en .
+
+<synthetic/standards-s> a tlx:LegalWork ;
+    dcterms:title "Synthetic Standards S, adopted under Article 4(2) of Synthetic Act D"@en ;
+    rdfs:comment "Synthetic example; not a real instrument."@en .
+
+<synthetic/decision-t> a tlx:LegalWork ;
+    dcterms:title "Synthetic Decision T, adopted under Article 9(1) of Synthetic Act D"@en ;
+    rdfs:comment "Synthetic example; not a real instrument."@en .
+
+<synthetic/regulation-r/whole> a tlx:Component ;
+    eli:is_part_of <synthetic/regulation-r> ;
+    eli:type_subdivision tlx:WholeText ;
+    tlx:canonicalId "whole" .
+
+<synthetic/act-d/art_4> a tlx:Component ;
+    eli:is_part_of <synthetic/act-d> ;
+    eli:type_subdivision tlx:Article ;
+    eli:number "4" ;
+    tlx:canonicalId "art_4" .
+
+<synthetic/act-d/art_4/par_2> a tlx:Component ;
+    eli:is_part_of <synthetic/act-d/art_4> ;
+    eli:type_subdivision tlx:Paragraph ;
+    eli:number "2" ;
+    tlx:canonicalId "art_4/par_2" .
+
+<synthetic/act-d/art_9> a tlx:Component ;
+    eli:is_part_of <synthetic/act-d> ;
+    eli:type_subdivision tlx:Article ;
+    eli:number "9" ;
+    tlx:canonicalId "art_9" .
+
+<synthetic/act-d/art_9/par_1> a tlx:Component ;
+    eli:is_part_of <synthetic/act-d/art_9> ;
+    eli:type_subdivision tlx:Paragraph ;
+    eli:number "1" ;
+    tlx:canonicalId "art_9/par_1" .
+
+<synthetic/act-d/art_30> a tlx:Component ;
+    eli:is_part_of <synthetic/act-d> ;
+    eli:type_subdivision tlx:Article ;
+    eli:number "30" ;
+    tlx:canonicalId "art_30" ;
+    rdfs:label "Article 30 (transitional provision)"@en .
+
+<synthetic/regulation-r/whole/v/2015-02-01> a tlx:TemporalVersion ;
+    eli:is_member_of <synthetic/regulation-r/whole> ;
+    eli:first_date_entry_in_force "2015-02-01"^^xsd:date ;
+    eli:date_no_longer_in_force "2022-02-28"^^xsd:date ;
+    eli:date_applicability "2015-02-01"^^xsd:date ;
+    tlx:dateNoLongerApplicable "2022-02-28"^^xsd:date ;
+    tlx:hasCondition <synthetic/condition/act-d/art_30/regulation-r> ;
+    eli:is_realized_by <synthetic/regulation-r/whole/v/2015-02-01/eng> ;
+    rdfs:comment "Both intervals end with the fulfilment of the condition on 1 March 2022, because Art. 30 of Act D covers legal force and applicability; the last included day of both is 28 February 2022."@en .
+
+<synthetic/regulation-r/whole/v/2015-02-01/eng> a tlx:TextUnit ;
+    eli:language lang:ENG ;
+    tlx:text "The text of Synthetic Regulation R."@en .
+
+<synthetic/act-d/art_4/par_2/v/2021-01-01> a tlx:TemporalVersion ;
+    eli:is_member_of <synthetic/act-d/art_4/par_2> ;
+    eli:first_date_entry_in_force "2021-01-01"^^xsd:date ;
+    tlx:openEnd tlx:NonePrescribed ;
+    eli:date_applicability "2021-01-01"^^xsd:date ;
+    tlx:openApplicabilityEnd tlx:NonePrescribed ;
+    eli:is_realized_by <synthetic/act-d/art_4/par_2/v/2021-01-01/eng> .
+
+<synthetic/act-d/art_4/par_2/v/2021-01-01/eng> a tlx:TextUnit ;
+    eli:language lang:ENG ;
+    tlx:text "The Agency shall adopt the standards."@en .
+
+<synthetic/act-d/art_9/par_1/v/2021-01-01> a tlx:TemporalVersion ;
+    eli:is_member_of <synthetic/act-d/art_9/par_1> ;
+    eli:first_date_entry_in_force "2021-01-01"^^xsd:date ;
+    tlx:openEnd tlx:NonePrescribed ;
+    eli:date_applicability "2021-01-01"^^xsd:date ;
+    tlx:openApplicabilityEnd tlx:NonePrescribed ;
+    eli:is_realized_by <synthetic/act-d/art_9/par_1/v/2021-01-01/eng> .
+
+<synthetic/act-d/art_9/par_1/v/2021-01-01/eng> a tlx:TextUnit ;
+    eli:language lang:ENG ;
+    tlx:text "The Agency shall determine the form of the licence by decision."@en .
+
+<synthetic/act-d/art_30/v/2021-01-01> a tlx:TemporalVersion ;
+    eli:is_member_of <synthetic/act-d/art_30> ;
+    eli:first_date_entry_in_force "2021-01-01"^^xsd:date ;
+    tlx:openEnd tlx:NonePrescribed ;
+    eli:date_applicability "2021-01-01"^^xsd:date ;
+    tlx:openApplicabilityEnd tlx:NonePrescribed ;
+    eli:is_realized_by <synthetic/act-d/art_30/v/2021-01-01/eng> .
+
+<synthetic/act-d/art_30/v/2021-01-01/eng> a tlx:TextUnit ;
+    eli:language lang:ENG ;
+    tlx:text "Regulation R remains in force and applicable until the standards under Article 4(2) and the decision under Article 9(1) of this Act are adopted."@en .
+
+<synthetic/condition/act-d/art_30/regulation-r> a tlx:TerminationCondition ;
+    tlx:condition "Regulation R remains in force and applicable until the standards under Article 4(2) and the decision under Article 9(1) of Act D are adopted."@en ;
+    tlx:prescribedBy <synthetic/act-d> ;
+    tlx:prescribingProvision <synthetic/act-d/art_30> ;
+    tlx:affects tlx:LegalForce , tlx:Applicability ;
+    tlx:effectiveFrom "2021-01-01"^^xsd:date ;
+    tlx:hasRequirement <synthetic/condition/act-d/art_30/regulation-r/req/1> ,
+                       <synthetic/condition/act-d/art_30/regulation-r/req/2> ;
+    tlx:fulfilledBy <synthetic/event/2022-03-01/adoption/decision-t> ;
+    tlx:status tlx:Fulfilled ;
+    rdfs:comment "Synthetic example. The fulfilment is entered explicitly: both requirements have a recorded event, and FULFILLED_BY is the later of the two."@en .
+
+<synthetic/condition/act-d/art_30/regulation-r/req/1> a tlx:Requirement ;
+    tlx:requirementText "Adoption of the standards under Article 4(2) of Act D."@en ;
+    tlx:adoptionUnder <synthetic/act-d/art_4/par_2> ;
+    tlx:metBy <synthetic/event/2021-06-15/adoption/standards-s> .
+
+<synthetic/condition/act-d/art_30/regulation-r/req/2> a tlx:Requirement ;
+    tlx:requirementText "Adoption of the decision under Article 9(1) of Act D."@en ;
+    tlx:adoptionUnder <synthetic/act-d/art_9/par_1> ;
+    tlx:metBy <synthetic/event/2022-03-01/adoption/decision-t> .
+
+<synthetic/event/2015-02-01/entry-into-force/regulation-r> a tlx:ChangeEvent ;
+    tlx:eventType tlx:EntryIntoForce ;
+    tlx:date "2015-02-01"^^xsd:date ;
+    tlx:causedBy <synthetic/regulation-r> ;
+    tlx:opens <synthetic/regulation-r/whole/v/2015-02-01> ;
+    tlx:opensApplicability <synthetic/regulation-r/whole/v/2015-02-01> .
+
+<synthetic/event/2021-01-01/entry-into-force/act-d> a tlx:ChangeEvent ;
+    tlx:eventType tlx:EntryIntoForce ;
+    tlx:date "2021-01-01"^^xsd:date ;
+    tlx:causedBy <synthetic/act-d> ;
+    tlx:opens <synthetic/act-d/art_4/par_2/v/2021-01-01> , <synthetic/act-d/art_9/par_1/v/2021-01-01> , <synthetic/act-d/art_30/v/2021-01-01> ;
+    tlx:opensApplicability <synthetic/act-d/art_4/par_2/v/2021-01-01> , <synthetic/act-d/art_9/par_1/v/2021-01-01> , <synthetic/act-d/art_30/v/2021-01-01> .
+
+<synthetic/event/2021-01-01/repeal/act-c> a tlx:ChangeEvent ;
+    tlx:eventType tlx:Repeal ;
+    tlx:date "2021-01-01"^^xsd:date ;
+    tlx:causedBy <synthetic/act-d> ;
+    rdfs:comment "Act C ceases to be in force; Regulation R, adopted under it, is kept in force by Art. 30 of Act D."@en .
+
+<synthetic/event/2021-06-15/adoption/standards-s> a tlx:ChangeEvent ;
+    tlx:eventType tlx:Adoption ;
+    tlx:date "2021-06-15"^^xsd:date ;
+    tlx:causedBy <synthetic/standards-s> ;
+    rdfs:comment "Meets the first requirement; the condition is not yet fulfilled."@en .
+
+<synthetic/event/2022-03-01/adoption/decision-t> a tlx:ChangeEvent ;
+    tlx:eventType tlx:Adoption ;
+    tlx:date "2022-03-01"^^xsd:date ;
+    tlx:causedBy <synthetic/decision-t> ;
+    tlx:closes <synthetic/regulation-r/whole/v/2015-02-01> ;
+    tlx:closesApplicability <synthetic/regulation-r/whole/v/2015-02-01> ;
+    rdfs:comment "Meets the second and last requirement, so it fulfils the condition and ends both intervals of the regulation."@en .
