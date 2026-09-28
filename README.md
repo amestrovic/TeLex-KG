@@ -571,4 +571,4 @@ CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/). Excerpts of legal prov
 
 ## Citation
 
-Please cite the paper and this resource: https://github.com/amestrovic/TeLex-KG.
+Please cite the paper and this resource: TBA.
