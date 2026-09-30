@@ -254,113 +254,9 @@ SELECT ?req ?under ?metOn ?metByT WHERE {
 | `syn:condition/act-d/art_30/regulation-r` | 2022-03-01 | both requirements met |
 
 The query reports only what has been entered. Whether the instruments have been adopted in fact is established by checking the sources and entering the events.
-## ChatGPT question and responses, 28 August 2026 (Section 5.2)
+## Language model runs of Section 5.2, 27 September 2026 (GPT-5.5)
 
-ChatGPT Free (OpenAI), 28 August 2026. The question was posed in Croatian.
-
-### Question
-
-```text
-Je li Pravilnik o uvjetima za izdavanje dopusnice za obavljanje znanstvene djelatnosti, uvjetima za reakreditaciju znanstvenih organizacija i sadržaju dopusnice (NN 83/10) danas na snazi, s obzirom na to da je Zakon o osiguravanju kvalitete u znanosti i visokom obrazovanju (NN 45/09), na temelju kojeg je donesen, prestao važiti?
-```
-
-### Response 1: without supporting documents
-
-```text
-Da, Pravilnik o uvjetima za izdavanje dopusnice za obavljanje znanstvene djelatnosti, uvjetima za reakreditaciju znanstvenih organizacija i sadržaju dopusnice (NN 83/10) i danas je na snazi, iako je Zakon o osiguravanju kvalitete u znanosti i visokom obrazovanju (NN 45/09), na temelju kojeg je donesen, prestao važiti 1. siječnja 2023. Razlog je prijelazna odredba Zakona o osiguravanju kvalitete u visokom obrazovanju i znanosti (NN 151/22). Tim je zakonom propisano da:
-•	pravilnik iz NN 83/10 ostaje na snazi do donošenja:
-o	Standarda kvalitete iz članka 8. stavka 3. novog Zakona i
-o	odluke o obliku i detaljnijem sadržaju dopusnice iz članka 21. stavka 3. novog Zakona.
-Stoga prestanak važenja zakona koji je bio pravna osnova za donošenje pravilnika nije doveo do prestanka važenja pravilnika, jer je zakonodavac njegovu daljnju primjenu izričito osigurao prijelaznom odredbom novog zakona. Zaključak: Pravilnik NN 83/10 i danas je na snazi te se primjenjuje kao prijelazni provedbeni propis sve dok ne budu doneseni novi provedbeni akti predviđeni Zakonom o osiguravanju kvalitete u visokom obrazovanju i znanosti (NN 151/22).
-```
-
-### Response 2: with the two acts supplied as documents
-
-```text
-Kratki odgovor je: da, vrlo vjerojatno jest, iako je njegovo pravno uporište danas drukčije nego u trenutku donošenja.
-Objašnjenje zahtijeva primjenu općih pravila o kontinuitetu podzakonskih propisa.
-Pravilnik iz 2010. godine izričito je donesen na temelju članka 26. stavka 2. tadašnjeg Zakona o osiguravanju kvalitete u znanosti i visokom obrazovanju (NN 45/09). To je jasno navedeno u preambuli Pravilnika.
-Međutim, taj je Zakon 2022. godine stavljen izvan snage donošenjem novog Zakona o osiguravanju kvalitete u visokom obrazovanju i znanosti (NN 151/22). Novi zakon uređuje isto područje – sustav osiguravanja kvalitete, inicijalnu akreditaciju, reakreditaciju i izdavanje dopusnica – ali na drukčiji način i s drukčijom normativnom strukturom.
-Ključno pravno pitanje glasi:
-Prestaje li automatski važiti pravilnik kada prestane važiti zakon na temelju kojeg je donesen?
-Odgovor je ne nužno.
-U hrvatskom pravnom sustavu vrijedi načelo da podzakonski propis ne prestaje automatski važiti samim prestankom važenja zakona na temelju kojeg je donesen, osim ako:
-1.	novi zakon izričito propiše da prestaju važiti provedbeni propisi,
-2.	novi zakon drukčije uredi isto pitanje tako da pravilnik više nije primjenjiv,
-3.	ili je pravilnik u suprotnosti s novim zakonom.
-Ako ništa od toga nije ispunjeno, pravilnik ostaje na snazi u dijelu u kojem nije protivan novom zakonu, sve dok ne bude izmijenjen ili stavljen izvan snage.
-U ovom slučaju novi Zakon iz 2022.:
-•	i dalje poznaje institut inicijalne akreditacije,
-•	i dalje predviđa izdavanje dopusnica,
-•	i dalje predviđa donošenje provedbenih propisa,
-•	ali uvodi drukčije kriterije i drukčiju koncepciju vrednovanja, osobito kroz Standarde kvalitete koje donosi AZVO.
-To znači da je potrebno razlikovati dvije razine:
-•	formalnu valjanost Pravilnika – koja nije automatski prestala,
-•	materijalnu primjenjivost pojedinih njegovih odredbi – koja može biti ograničena ako su u koliziji s novim Zakonom.
-Primjerice, Pravilnik propisuje minimalan broj znanstvenika, sadržaj elaborata, uvjete prostora i opreme te postupak reakreditacije. Novi Zakon iz 2022. dio tih pitanja uređuje drukčije (npr. samoanalizom prema Standardima kvalitete, novim kriterijima za inicijalnu akreditaciju i drukčijim zahtjevima za znanstvene institute).
-Zaključak
-Po mom mišljenju, koje je u skladu s općim pravilima hrvatskog upravnog prava:
-•	Pravilnik NN 83/10 nije automatski prestao važiti samo zato što je prestao važiti Zakon NN 45/09.
-•	On se može primjenjivati samo u mjeri u kojoj nije u suprotnosti sa Zakonom o osiguravanju kvalitete u visokom obrazovanju i znanosti (NN 151/22).
-•	Ako postoji nesklad između Pravilnika i novog Zakona, prednost ima Zakon, a nesuglasne odredbe Pravilnika ne mogu biti pravna osnova za odlučivanje.
-To je upravo razlog zbog kojeg je danas normativna situacija pomalo neuredna: formalno još postoji pravilnik iz 2010., ali dio njegovih rješenja više nije potpuno usklađen s novim zakonskim okvirom.
-Mislim da je ovo vrlo zanimljivo pitanje za pravnu analizu jer se ovdje susreću načelo kontinuiteta podzakonskih propisa, načelo zakonitosti i problem tzv. "preživljavanja" provedbenih propisa nakon izmjene ili ukidanja zakonske osnove. Upravo oko toga postoji dosta upravnopravne i ustavnopravne prakse koja može dodatno razjasniti granice primjene takvih pravilnika.
-```
-
-### English translation
-
-Question:
-
-```text
-Is the Regulation on the Conditions for Issuing a Licence for Scientific Activity, the Conditions for the Re-accreditation of Scientific Organisations and the Content of the Licence (Official Gazette No. 83/10) still in force today, given that the Act on Quality Assurance in Science and Higher Education (Official Gazette No. 45/09), under which it was adopted, has ceased to be in force?
-```
-
-Response 1:
-
-```text
-Yes, the Regulation on the Conditions for Issuing a Licence for Scientific Activity, the Conditions for the Re-accreditation of Scientific Organisations and the Content of the Licence (OG 83/10) is still in force today, although the Act on Quality Assurance in Science and Higher Education (OG 45/09), under which it was adopted, ceased to be in force on 1 January 2023. The reason is the transitional provision of the Act on Quality Assurance in Higher Education and Science (OG 151/22). That act provides that:
-•	the regulation from OG 83/10 remains in force until the adoption of:
-o	the Quality Standards under Article 8(3) of the new Act and
-o	the decision on the form and detailed content of the licence under Article 21(3) of the new Act.
-Therefore, the cessation of the act that was the legal basis for adopting the regulation did not lead to the cessation of the regulation, because the legislator expressly ensured its continued application through the transitional provision of the new act. Conclusion: Regulation OG 83/10 is still in force today and is applied as a transitional implementing regulation until the new implementing acts provided for by the Act on Quality Assurance in Higher Education and Science (OG 151/22) are adopted.
-```
-
-Response 2:
-
-```text
-The short answer is: yes, very likely it is, although its legal basis today is different from what it was when it was adopted.
-The explanation requires applying the general rules on the continuity of subordinate legislation.
-The 2010 Regulation was expressly adopted on the basis of Article 26(2) of the then Act on Quality Assurance in Science and Higher Education (OG 45/09). This is clearly stated in the preamble of the Regulation.
-However, that Act was repealed in 2022 by the adoption of the new Act on Quality Assurance in Higher Education and Science (OG 151/22). The new act regulates the same area (the quality assurance system, initial accreditation, reaccreditation and the issuing of licences), but in a different way and with a different normative structure.
-The key legal question is:
-Does a regulation automatically cease to be in force when the act on the basis of which it was adopted ceases to be in force?
-The answer is: not necessarily.
-In the Croatian legal system, the principle applies that a subordinate regulation does not automatically cease to be in force merely because the act on the basis of which it was adopted has ceased to be in force, unless:
-1.	the new act expressly provides that the implementing regulations cease to be in force,
-2.	the new act regulates the same matter differently, so that the regulation is no longer applicable,
-3.	or the regulation is contrary to the new act.
-If none of this is the case, the regulation remains in force to the extent that it is not contrary to the new act, until it is amended or repealed.
-In this case, the new 2022 Act:
-•	still provides for initial accreditation,
-•	still provides for the issuing of licences,
-•	still provides for the adoption of implementing regulations,
-•	but introduces different criteria and a different concept of evaluation, in particular through the Quality Standards adopted by AZVO.
-This means that two levels must be distinguished:
-•	the formal validity of the Regulation, which has not automatically ceased,
-•	the material applicability of its individual provisions, which may be limited if they conflict with the new Act.
-For example, the Regulation prescribes the minimum number of scientists, the content of the supporting study, the requirements for premises and equipment, and the reaccreditation procedure. The new 2022 Act regulates some of these matters differently (for example, through self-evaluation according to the Quality Standards, new criteria for initial accreditation and different requirements for scientific institutes).
-Conclusion
-In my opinion, which is consistent with the general rules of Croatian administrative law:
-•	Regulation OG 83/10 did not automatically cease to be in force merely because Act OG 45/09 ceased to be in force.
-•	It can be applied only to the extent that it is not contrary to the Act on Quality Assurance in Higher Education and Science (OG 151/22).
-•	If there is a conflict between the Regulation and the new Act, the Act prevails, and the conflicting provisions of the Regulation cannot serve as a legal basis for decision-making.
-This is precisely why the normative situation today is somewhat untidy: formally, the 2010 regulation still exists, but some of its solutions are no longer fully aligned with the new legal framework.
-I think this is a very interesting question for legal analysis, because it brings together the principle of continuity of subordinate legislation, the principle of legality and the problem of the so-called "survival" of implementing regulations after their legal basis has been amended or repealed. There is a considerable body of administrative and constitutional case law on this that can further clarify the limits of applying such regulations.
-```
-
-## Additional runs, 27 September 2026 (GPT-5.5)
-
-The question of Section 5.2 was posed again on 27 September 2026 in ChatGPT, with the model GPT-5.5 and the reasoning level set to high, as shown in the interface. Each setting was run once, in a new conversation. Web search could not be switched off in the interface, so the first line of every prompt asks the model not to search the web. The settings differ only in what the model was given with the question:
+The question of Section 5.2 was posed on 27 September 2026 in ChatGPT, with the model GPT-5.5 and the reasoning level set to high, as shown in the interface. Each setting was run once, in a new conversation. Web search could not be switched off in the interface, so the first line of every prompt asks the model not to search the web. The settings differ only in what the model was given with the question:
 
 1. nothing;
 2. the two acts as PDF files, as published in the Official Gazette: OG 83/2010 and OG 151/2022;
@@ -563,6 +459,110 @@ Since the database records neither the adoption of these acts nor the date on wh
 Regulation OG 83/10 did not cease to be in force merely because Act OG 45/09 ceased to be in force, but was kept in force by the transitional provision of the new Act OG 151/2022 until the new implementing acts are adopted. Since the adoption of these acts is not recorded, according to the available data the Regulation is still considered valid.
 A precise wording for a legal analysis:
 Regulation OG 83/10 remained in force on the basis of Article 50 of Act OG 151/2022. The cessation of Act OG 45/09 does not by itself lead to the cessation of the Regulation, because the new act expressly regulated its transitional status. Its cessation depends on the cumulative fulfilment of the conditions of Article 50, that is, the adoption of the Quality Standards and of the decision on the form and detailed content of the licence.
+```
+
+## Earlier runs, 28 August 2026 (ChatGPT Free)
+
+ChatGPT Free (OpenAI), 28 August 2026. The question was posed in Croatian. These earlier runs, with the question alone and with two acts supplied, are not reported in the paper; they are kept here for completeness.
+
+### Question
+
+```text
+Je li Pravilnik o uvjetima za izdavanje dopusnice za obavljanje znanstvene djelatnosti, uvjetima za reakreditaciju znanstvenih organizacija i sadržaju dopusnice (NN 83/10) danas na snazi, s obzirom na to da je Zakon o osiguravanju kvalitete u znanosti i visokom obrazovanju (NN 45/09), na temelju kojeg je donesen, prestao važiti?
+```
+
+### Response 1: without supporting documents
+
+```text
+Da, Pravilnik o uvjetima za izdavanje dopusnice za obavljanje znanstvene djelatnosti, uvjetima za reakreditaciju znanstvenih organizacija i sadržaju dopusnice (NN 83/10) i danas je na snazi, iako je Zakon o osiguravanju kvalitete u znanosti i visokom obrazovanju (NN 45/09), na temelju kojeg je donesen, prestao važiti 1. siječnja 2023. Razlog je prijelazna odredba Zakona o osiguravanju kvalitete u visokom obrazovanju i znanosti (NN 151/22). Tim je zakonom propisano da:
+•	pravilnik iz NN 83/10 ostaje na snazi do donošenja:
+o	Standarda kvalitete iz članka 8. stavka 3. novog Zakona i
+o	odluke o obliku i detaljnijem sadržaju dopusnice iz članka 21. stavka 3. novog Zakona.
+Stoga prestanak važenja zakona koji je bio pravna osnova za donošenje pravilnika nije doveo do prestanka važenja pravilnika, jer je zakonodavac njegovu daljnju primjenu izričito osigurao prijelaznom odredbom novog zakona. Zaključak: Pravilnik NN 83/10 i danas je na snazi te se primjenjuje kao prijelazni provedbeni propis sve dok ne budu doneseni novi provedbeni akti predviđeni Zakonom o osiguravanju kvalitete u visokom obrazovanju i znanosti (NN 151/22).
+```
+
+### Response 2: with the two acts supplied as documents
+
+```text
+Kratki odgovor je: da, vrlo vjerojatno jest, iako je njegovo pravno uporište danas drukčije nego u trenutku donošenja.
+Objašnjenje zahtijeva primjenu općih pravila o kontinuitetu podzakonskih propisa.
+Pravilnik iz 2010. godine izričito je donesen na temelju članka 26. stavka 2. tadašnjeg Zakona o osiguravanju kvalitete u znanosti i visokom obrazovanju (NN 45/09). To je jasno navedeno u preambuli Pravilnika.
+Međutim, taj je Zakon 2022. godine stavljen izvan snage donošenjem novog Zakona o osiguravanju kvalitete u visokom obrazovanju i znanosti (NN 151/22). Novi zakon uređuje isto područje – sustav osiguravanja kvalitete, inicijalnu akreditaciju, reakreditaciju i izdavanje dopusnica – ali na drukčiji način i s drukčijom normativnom strukturom.
+Ključno pravno pitanje glasi:
+Prestaje li automatski važiti pravilnik kada prestane važiti zakon na temelju kojeg je donesen?
+Odgovor je ne nužno.
+U hrvatskom pravnom sustavu vrijedi načelo da podzakonski propis ne prestaje automatski važiti samim prestankom važenja zakona na temelju kojeg je donesen, osim ako:
+1.	novi zakon izričito propiše da prestaju važiti provedbeni propisi,
+2.	novi zakon drukčije uredi isto pitanje tako da pravilnik više nije primjenjiv,
+3.	ili je pravilnik u suprotnosti s novim zakonom.
+Ako ništa od toga nije ispunjeno, pravilnik ostaje na snazi u dijelu u kojem nije protivan novom zakonu, sve dok ne bude izmijenjen ili stavljen izvan snage.
+U ovom slučaju novi Zakon iz 2022.:
+•	i dalje poznaje institut inicijalne akreditacije,
+•	i dalje predviđa izdavanje dopusnica,
+•	i dalje predviđa donošenje provedbenih propisa,
+•	ali uvodi drukčije kriterije i drukčiju koncepciju vrednovanja, osobito kroz Standarde kvalitete koje donosi AZVO.
+To znači da je potrebno razlikovati dvije razine:
+•	formalnu valjanost Pravilnika – koja nije automatski prestala,
+•	materijalnu primjenjivost pojedinih njegovih odredbi – koja može biti ograničena ako su u koliziji s novim Zakonom.
+Primjerice, Pravilnik propisuje minimalan broj znanstvenika, sadržaj elaborata, uvjete prostora i opreme te postupak reakreditacije. Novi Zakon iz 2022. dio tih pitanja uređuje drukčije (npr. samoanalizom prema Standardima kvalitete, novim kriterijima za inicijalnu akreditaciju i drukčijim zahtjevima za znanstvene institute).
+Zaključak
+Po mom mišljenju, koje je u skladu s općim pravilima hrvatskog upravnog prava:
+•	Pravilnik NN 83/10 nije automatski prestao važiti samo zato što je prestao važiti Zakon NN 45/09.
+•	On se može primjenjivati samo u mjeri u kojoj nije u suprotnosti sa Zakonom o osiguravanju kvalitete u visokom obrazovanju i znanosti (NN 151/22).
+•	Ako postoji nesklad između Pravilnika i novog Zakona, prednost ima Zakon, a nesuglasne odredbe Pravilnika ne mogu biti pravna osnova za odlučivanje.
+To je upravo razlog zbog kojeg je danas normativna situacija pomalo neuredna: formalno još postoji pravilnik iz 2010., ali dio njegovih rješenja više nije potpuno usklađen s novim zakonskim okvirom.
+Mislim da je ovo vrlo zanimljivo pitanje za pravnu analizu jer se ovdje susreću načelo kontinuiteta podzakonskih propisa, načelo zakonitosti i problem tzv. "preživljavanja" provedbenih propisa nakon izmjene ili ukidanja zakonske osnove. Upravo oko toga postoji dosta upravnopravne i ustavnopravne prakse koja može dodatno razjasniti granice primjene takvih pravilnika.
+```
+
+### English translation
+
+Question:
+
+```text
+Is the Regulation on the Conditions for Issuing a Licence for Scientific Activity, the Conditions for the Re-accreditation of Scientific Organisations and the Content of the Licence (Official Gazette No. 83/10) still in force today, given that the Act on Quality Assurance in Science and Higher Education (Official Gazette No. 45/09), under which it was adopted, has ceased to be in force?
+```
+
+Response 1:
+
+```text
+Yes, the Regulation on the Conditions for Issuing a Licence for Scientific Activity, the Conditions for the Re-accreditation of Scientific Organisations and the Content of the Licence (OG 83/10) is still in force today, although the Act on Quality Assurance in Science and Higher Education (OG 45/09), under which it was adopted, ceased to be in force on 1 January 2023. The reason is the transitional provision of the Act on Quality Assurance in Higher Education and Science (OG 151/22). That act provides that:
+•	the regulation from OG 83/10 remains in force until the adoption of:
+o	the Quality Standards under Article 8(3) of the new Act and
+o	the decision on the form and detailed content of the licence under Article 21(3) of the new Act.
+Therefore, the cessation of the act that was the legal basis for adopting the regulation did not lead to the cessation of the regulation, because the legislator expressly ensured its continued application through the transitional provision of the new act. Conclusion: Regulation OG 83/10 is still in force today and is applied as a transitional implementing regulation until the new implementing acts provided for by the Act on Quality Assurance in Higher Education and Science (OG 151/22) are adopted.
+```
+
+Response 2:
+
+```text
+The short answer is: yes, very likely it is, although its legal basis today is different from what it was when it was adopted.
+The explanation requires applying the general rules on the continuity of subordinate legislation.
+The 2010 Regulation was expressly adopted on the basis of Article 26(2) of the then Act on Quality Assurance in Science and Higher Education (OG 45/09). This is clearly stated in the preamble of the Regulation.
+However, that Act was repealed in 2022 by the adoption of the new Act on Quality Assurance in Higher Education and Science (OG 151/22). The new act regulates the same area (the quality assurance system, initial accreditation, reaccreditation and the issuing of licences), but in a different way and with a different normative structure.
+The key legal question is:
+Does a regulation automatically cease to be in force when the act on the basis of which it was adopted ceases to be in force?
+The answer is: not necessarily.
+In the Croatian legal system, the principle applies that a subordinate regulation does not automatically cease to be in force merely because the act on the basis of which it was adopted has ceased to be in force, unless:
+1.	the new act expressly provides that the implementing regulations cease to be in force,
+2.	the new act regulates the same matter differently, so that the regulation is no longer applicable,
+3.	or the regulation is contrary to the new act.
+If none of this is the case, the regulation remains in force to the extent that it is not contrary to the new act, until it is amended or repealed.
+In this case, the new 2022 Act:
+•	still provides for initial accreditation,
+•	still provides for the issuing of licences,
+•	still provides for the adoption of implementing regulations,
+•	but introduces different criteria and a different concept of evaluation, in particular through the Quality Standards adopted by AZVO.
+This means that two levels must be distinguished:
+•	the formal validity of the Regulation, which has not automatically ceased,
+•	the material applicability of its individual provisions, which may be limited if they conflict with the new Act.
+For example, the Regulation prescribes the minimum number of scientists, the content of the supporting study, the requirements for premises and equipment, and the reaccreditation procedure. The new 2022 Act regulates some of these matters differently (for example, through self-evaluation according to the Quality Standards, new criteria for initial accreditation and different requirements for scientific institutes).
+Conclusion
+In my opinion, which is consistent with the general rules of Croatian administrative law:
+•	Regulation OG 83/10 did not automatically cease to be in force merely because Act OG 45/09 ceased to be in force.
+•	It can be applied only to the extent that it is not contrary to the Act on Quality Assurance in Higher Education and Science (OG 151/22).
+•	If there is a conflict between the Regulation and the new Act, the Act prevails, and the conflicting provisions of the Regulation cannot serve as a legal basis for decision-making.
+This is precisely why the normative situation today is somewhat untidy: formally, the 2010 regulation still exists, but some of its solutions are no longer fully aligned with the new legal framework.
+I think this is a very interesting question for legal analysis, because it brings together the principle of continuity of subordinate legislation, the principle of legality and the problem of the so-called "survival" of implementing regulations after their legal basis has been amended or repealed. There is a considerable body of administrative and constitutional case law on this that can further clarify the limits of applying such regulations.
 ```
 
 ## License
